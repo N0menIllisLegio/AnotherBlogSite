@@ -5,10 +5,9 @@ using AnotherBlogSite.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddDbContext<BlogSiteContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("BlogSiteContext")));
@@ -43,6 +42,29 @@ builder.Services.AddAuthentication(x =>
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Description = "JWT bearer authorization.",
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        BearerFormat = "JWT",
+        Type = SecuritySchemeType.ApiKey,
+        In = ParameterLocation.Header,
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new()
+            {
+                Reference = new() { Id = JwtBearerDefaults.AuthenticationScheme, Type = ReferenceType.SecurityScheme }
+            },
+            new string[] { }
+        }
+    });
+});
 
 builder.Services.AddTransient<RequestsLoggingMiddleware>();
 
@@ -58,11 +80,10 @@ using (var scope = app.Services.CreateScope())
     await context.Database.MigrateAsync();
 }
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
