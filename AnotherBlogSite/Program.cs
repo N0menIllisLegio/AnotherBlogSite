@@ -1,4 +1,5 @@
 using AnotherBlogSite.Data;
+using AnotherBlogSite.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<BlogSiteContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("BlogSiteContext")));
+
+builder.Services.AddIdentityCore<User>(opt =>
+{
+    opt.User.RequireUniqueEmail = true;
+    opt.Password.RequiredLength = 8;
+    opt.Password.RequireDigit = true;
+    opt.Password.RequireLowercase = true;
+    opt.Password.RequireUppercase = true;
+}).AddEntityFrameworkStores<BlogSiteContext>();
 
 builder.Services.AddControllersWithViews();
 
