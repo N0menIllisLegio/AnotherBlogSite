@@ -1,5 +1,6 @@
 using AnotherBlogSite.Data;
 using AnotherBlogSite.Data.Entities;
+using AnotherBlogSite.Middlewares;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,9 @@ builder.Services.AddIdentityCore<User>(opt =>
     opt.Password.RequireUppercase = true;
 }).AddEntityFrameworkStores<BlogSiteContext>();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<RequestsLoggingMiddleware>();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -41,6 +44,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseMiddleware<RequestsLoggingMiddleware>();
 
 app.MapControllerRoute(
     name: "default",
