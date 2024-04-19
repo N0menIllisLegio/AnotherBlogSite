@@ -1,6 +1,6 @@
 ﻿using System.Text;
+using AnotherBlogSite.Application.Options;
 using AnotherBlogSite.Application.Services;
-using AnotherBlogSite.Domain.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,9 +21,10 @@ public static class DependencyInjection
             {
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
                     ValidIssuer = configuration["Jwt:Issuer"],
                     ValidAudience = configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
@@ -33,9 +34,10 @@ public static class DependencyInjection
 
         services.AddAuthorization();
         
-        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IBlogPostService, BlogPostsService>();
         services.AddScoped<ICommentService, CommentsService>();
+        
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Jwt));
 
         return services;
     }

@@ -27,7 +27,7 @@ public static class DependencyInjection
 
         services.AddScoped<IBlogPostsRepository, BlogPostsRepository>();
         services.AddScoped<ICommentsRepository, CommentsRepository>();
-        services.AddScoped<IUserManagementService, UserManagementService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }
