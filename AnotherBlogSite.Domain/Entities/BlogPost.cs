@@ -1,4 +1,4 @@
-﻿namespace AnotherBlogSite.Data.Entities;
+﻿namespace AnotherBlogSite.Domain.Entities;
 
 public sealed class BlogPost
 {
@@ -6,4 +6,6 @@ public sealed class BlogPost
     public string Title { get; set; }
     public string Content { get; set; }
     public DateTimeOffset CreatedDate { get; set; }
+    
+    public User Author { get; set; }
 }

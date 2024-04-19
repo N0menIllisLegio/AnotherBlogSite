@@ -13,4 +13,12 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AnotherBlogSite.Application\AnotherBlogSite.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>
