@@ -1,4 +1,4 @@
-﻿using AnotherBlogSite.Domain.Repositories;
+﻿using AnotherBlogSite.Application.Repositories;
 
 namespace AnotherBlogSite.Infrastructure.Repositories;
 
