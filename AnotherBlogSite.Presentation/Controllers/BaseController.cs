@@ -18,20 +18,20 @@ public class BaseController: ControllerBase
 
             var notFoundErrors = new ValidationProblemDetails(ModelState);
 
-            return NotFound(notFoundErrors.Errors);
+            return NotFound(notFoundErrors);
         }
 
         ModelState.AddModelError("GeneralError", result.Error ?? "Invalid input!");
 
         var badRequestErrors = new ValidationProblemDetails(ModelState);
 
-        return BadRequest(badRequestErrors.Errors);
+        return BadRequest(badRequestErrors);
     }
     
     protected IActionResult OperationResult(EmptyResult result)
     {
         if (result.Succeeded)
-            return Ok();
+            return NoContent();
 
         if (result.ErrorType == ErrorType.NotFound)
         {
@@ -39,13 +39,13 @@ public class BaseController: ControllerBase
 
             var notFoundErrors = new ValidationProblemDetails(ModelState);
 
-            return NotFound(notFoundErrors.Errors);
+            return NotFound(notFoundErrors);
         }
 
         ModelState.AddModelError("GeneralError", result.Error ?? "Invalid input!");
 
         var badRequestErrors = new ValidationProblemDetails(ModelState);
 
-        return BadRequest(badRequestErrors.Errors);
+        return BadRequest(badRequestErrors);
     }
 }
