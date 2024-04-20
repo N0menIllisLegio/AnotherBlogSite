@@ -21,7 +21,7 @@ internal sealed class BlogPostsRepository: IBlogPostsRepository
 
     public Task<List<DomainBlogPost>> GetAllAsync()
     {
-        return _mapper.ProjectToDomain(_context.BlogPosts).ToListAsync();
+        return _mapper.ProjectToDomain(_context.BlogPosts.Include(x => x.Author)).ToListAsync();
     }
 
     public async Task<Result<DomainBlogPost>> GetAsync(Guid blogPostId)
@@ -34,7 +34,7 @@ internal sealed class BlogPostsRepository: IBlogPostsRepository
         if (blogPost is null)
             return Result<DomainBlogPost>.CreateFailure("Blog Post not found!", ErrorType.NotFound);
 
-        return Result<DomainBlogPost>.CreateSuccess(_mapper.MapToDomain(blogPost));
+        return Result<DomainBlogPost>.CreateSuccess(_mapper.MapToDomainWithComments(blogPost));
     }
 
     public async Task<Result<Guid>> CreateAsync(DomainBlogPost newBlogPost)

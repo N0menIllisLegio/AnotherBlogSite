@@ -2,16 +2,12 @@
 
 namespace AnotherBlogSite.Presentation.Models;
 
-public sealed class BlogPostUpdateRequest
+public sealed class CommentCreateRequest
 {
     [Required]
     public Guid BlogPostId { get; set; }
     
     [Required]
-    [MinLength(10)]
-    public string Title { get; set; }
-    
-    [Required]
-    [MinLength(100)]
+    [MinLength(1)]
     public string Content { get; set; }
 }

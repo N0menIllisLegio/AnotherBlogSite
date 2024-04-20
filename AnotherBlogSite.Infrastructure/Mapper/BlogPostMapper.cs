@@ -9,7 +9,12 @@ namespace AnotherBlogSite.Infrastructure.Mapper;
 internal sealed partial class BlogPostMapper
 {
     public partial IQueryable<DomainBlogPost> ProjectToDomain(IQueryable<InfrastructureBlogPost> blogPosts);
-    public partial DomainBlogPost MapToDomain(InfrastructureBlogPost blogPost);
+    
+    [MapperIgnoreTarget(nameof(InfrastructureBlogPost.Comments))]
+    [MapperIgnoreSource(nameof(DomainBlogPost.Comments))]
+    public partial DomainBlogPost MapToDomainWithoutComments(InfrastructureBlogPost blogPost);
+    
+    public partial DomainBlogPost MapToDomainWithComments(InfrastructureBlogPost blogPost);
     
     [MapperIgnoreTarget(nameof(InfrastructureBlogPost.Author))]
     [MapperIgnoreSource(nameof(DomainBlogPost.Author))]

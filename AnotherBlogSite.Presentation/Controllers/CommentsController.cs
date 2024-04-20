@@ -4,6 +4,7 @@ using AnotherBlogSite.Application.Services;
 using AnotherBlogSite.Domain.Entities;
 using AnotherBlogSite.Presentation.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnotherBlogSite.Presentation.Controllers;
@@ -11,13 +12,13 @@ namespace AnotherBlogSite.Presentation.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Authorize]
-public sealed class BlogPostsController: BaseController
+public sealed class CommentsController: BaseController
 {
-    private readonly IBlogPostService _blogPostsService;
+    private readonly ICommentService _commentService;
 
-    public BlogPostsController(IBlogPostService blogPostsService)
+    public CommentsController(ICommentService commentService)
     {
-        _blogPostsService = blogPostsService;
+        _commentService = commentService;
     }
 
     [HttpPost]
@@ -25,14 +26,14 @@ public sealed class BlogPostsController: BaseController
     [ProducesResponseType<Guid>((int)HttpStatusCode.OK)]
     [ProducesResponseType((int) HttpStatusCode.Forbidden)]
     [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> Create([FromBody] BlogPostCreateRequest request)
+    public async Task<IActionResult> Create([FromBody] CommentCreateRequest request)
     {
         string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
         
         if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out Guid userId))
             return Forbid();
 
-        var result = await _blogPostsService.CreateAsync(request.Title, request.Content, userId);
+        var result = await _commentService.CreateAsync(userId, request.BlogPostId, request.Content);
 
         return OperationResult(result);
     }
@@ -41,9 +42,9 @@ public sealed class BlogPostsController: BaseController
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> Update([FromBody] BlogPostUpdateRequest request)
+    public async Task<IActionResult> Update([FromBody] CommentUpdateRequest request)
     {
-        var result = await _blogPostsService.UpdateAsync(request.BlogPostId, request.Title, request.Content);
+        var result = await _commentService.UpdateAsync(request.CommentId, request.Content);
 
         return OperationResult(result);
     }
@@ -51,30 +52,19 @@ public sealed class BlogPostsController: BaseController
     [HttpDelete]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
-    public async Task<IActionResult> Delete([FromBody] Guid blogPostId)
+    public async Task<IActionResult> Delete([FromBody] Guid commentId)
     {
-        await _blogPostsService.DeleteAsync(blogPostId);
+        await _commentService.DeleteAsync(commentId);
 
         return NoContent();
     }
 
     [HttpGet("{blogPostId}")]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType<BlogPost>((int)HttpStatusCode.OK)]
-    [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
+    [ProducesResponseType<List<Comment>>((int)HttpStatusCode.OK)]
     public async Task<IActionResult> Get([FromRoute] Guid blogPostId)
     {
-        var result = await _blogPostsService.GetAsync(blogPostId);
-
-        return OperationResult(result);
-    }
-
-    [HttpGet]
-    [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType<List<BlogPost>>((int)HttpStatusCode.OK)]
-    public async Task<IActionResult> Get()
-    {
-        var result = await _blogPostsService.GetAllAsync();
+        var result = await _commentService.GetAllBlogPostCommentsAsync(blogPostId);
 
         return Ok(result);
     }

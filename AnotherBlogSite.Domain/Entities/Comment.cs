@@ -9,5 +9,4 @@ public sealed class Comment
     public Guid AuthorId { get; set; }
     public User Author { get; set; }
     public Guid BlogPostId { get; set; }
-    public BlogPost BlogPost { get; set; }
 }
