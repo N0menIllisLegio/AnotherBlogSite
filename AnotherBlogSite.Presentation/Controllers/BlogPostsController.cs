@@ -58,6 +58,7 @@ public sealed class BlogPostsController: BaseController
         return NoContent();
     }
 
+    [AllowAnonymous]
     [HttpGet("{blogPostId}")]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
     [ProducesResponseType<BlogPost>((int)HttpStatusCode.OK)]
@@ -69,6 +70,7 @@ public sealed class BlogPostsController: BaseController
         return OperationResult(result);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
     [ProducesResponseType<List<BlogPost>>((int)HttpStatusCode.OK)]

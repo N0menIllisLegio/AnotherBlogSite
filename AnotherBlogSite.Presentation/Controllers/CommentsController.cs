@@ -59,6 +59,7 @@ public sealed class CommentsController: BaseController
         return NoContent();
     }
 
+    [AllowAnonymous]
     [HttpGet("{blogPostId}")]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
     [ProducesResponseType<List<Comment>>((int)HttpStatusCode.OK)]
