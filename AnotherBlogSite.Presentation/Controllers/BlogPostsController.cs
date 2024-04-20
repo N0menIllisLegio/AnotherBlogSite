@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AnotherBlogSite.Presentation.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("[controller]")]
 [Authorize]
 public sealed class BlogPostsController: BaseController
 {
