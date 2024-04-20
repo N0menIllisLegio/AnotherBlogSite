@@ -68,7 +68,7 @@ internal sealed class AuthService: IAuthService
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Email, user.Email!),
-            new("userId", user.Id.ToString())
+            new(ClaimTypes.NameIdentifier, user.Id.ToString())
         };
 
         return _jwtSecurityTokenHandler.CreateEncodedJwt(
