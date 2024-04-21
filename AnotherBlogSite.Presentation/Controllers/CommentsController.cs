@@ -49,10 +49,10 @@ public sealed class CommentsController: BaseController
         return OperationResult(result);
     }
 
-    [HttpDelete]
+    [HttpDelete("{commentId}")]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
-    public async Task<IActionResult> Delete([FromBody] Guid commentId)
+    public async Task<IActionResult> Delete([FromRoute] Guid commentId)
     {
         await _commentService.DeleteAsync(commentId);
 

@@ -48,10 +48,10 @@ public sealed class BlogPostsController: BaseController
         return OperationResult(result);
     }
 
-    [HttpDelete]
+    [HttpDelete("{blogPostId}")]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
-    public async Task<IActionResult> Delete([FromBody] Guid blogPostId)
+    public async Task<IActionResult> Delete([FromRoute] Guid blogPostId)
     {
         await _blogPostsService.DeleteAsync(blogPostId);
 
