@@ -23,7 +23,7 @@ internal sealed class BlogPostsService: IBlogPostService
         return _blogPostsRepository.GetAsync(blogPostId);
     }
 
-    public Task<Result<Guid>> CreateAsync(string title, string content, Guid authorId)
+    public Task<Result<BlogPost>> CreateAsync(string title, string content, Guid authorId)
     {
         var newBlogPost = new BlogPost()
         {
@@ -36,7 +36,7 @@ internal sealed class BlogPostsService: IBlogPostService
         return _blogPostsRepository.CreateAsync(newBlogPost);
     }
 
-    public Task<EmptyResult> UpdateAsync(Guid blogPostId, string title, string content)
+    public Task<Result<BlogPost>> UpdateAsync(Guid blogPostId, string title, string content)
     {
         var updatedBlogPost = new BlogPost()
         {

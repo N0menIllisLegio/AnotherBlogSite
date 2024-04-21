@@ -11,13 +11,13 @@ internal sealed partial class BlogPostMapper
     public partial IQueryable<DomainBlogPost> ProjectToDomain(IQueryable<InfrastructureBlogPost> blogPosts);
     
     [MapperIgnoreTarget(nameof(InfrastructureBlogPost.Comments))]
-    [MapperIgnoreSource(nameof(DomainBlogPost.Comments))]
     public partial DomainBlogPost MapToDomainWithoutComments(InfrastructureBlogPost blogPost);
     
     public partial DomainBlogPost MapToDomainWithComments(InfrastructureBlogPost blogPost);
     
     [MapperIgnoreTarget(nameof(InfrastructureBlogPost.Author))]
     [MapperIgnoreSource(nameof(DomainBlogPost.Author))]
+    [MapperIgnoreTarget(nameof(InfrastructureBlogPost.Comments))]
     public partial InfrastructureBlogPost MapToInfrastructure(DomainBlogPost blogPost);
     
     [MapperIgnoreSource(nameof(DomainBlogPost.Id))]
@@ -28,5 +28,6 @@ internal sealed partial class BlogPostMapper
     [MapperIgnoreTarget(nameof(InfrastructureBlogPost.Author))]
     [MapperIgnoreSource(nameof(DomainBlogPost.AuthorId))]
     [MapperIgnoreTarget(nameof(InfrastructureBlogPost.AuthorId))]
+    [MapperIgnoreTarget(nameof(InfrastructureBlogPost.Comments))]
     public partial void Map(DomainBlogPost updatedBlogPost, InfrastructureBlogPost originalBlogPost);
 }

@@ -21,14 +21,14 @@ internal sealed class BlogPostsRepository: IBlogPostsRepository
 
     public Task<List<DomainBlogPost>> GetAllAsync()
     {
-        return _mapper.ProjectToDomain(_context.BlogPosts.Include(x => x.Author)).ToListAsync();
+        return _mapper.ProjectToDomain(_context.BlogPosts.Include(x => x.Author).AsNoTracking()).ToListAsync();
     }
 
     public async Task<Result<DomainBlogPost>> GetAsync(Guid blogPostId)
     {
         var blogPost = await _context.BlogPosts
             .Include(x => x.Author)
-            .Include(x => x.Comments)
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == blogPostId);
 
         if (blogPost is null)
@@ -37,7 +37,7 @@ internal sealed class BlogPostsRepository: IBlogPostsRepository
         return Result<DomainBlogPost>.CreateSuccess(_mapper.MapToDomainWithComments(blogPost));
     }
 
-    public async Task<Result<Guid>> CreateAsync(DomainBlogPost newBlogPost)
+    public async Task<Result<DomainBlogPost>> CreateAsync(DomainBlogPost newBlogPost)
     {
         var blogPost = _mapper.MapToInfrastructure(newBlogPost);
 
@@ -46,26 +46,29 @@ internal sealed class BlogPostsRepository: IBlogPostsRepository
         int createdCount = await _context.SaveChangesAsync();
         
         if (createdCount != 1)
-            return Result<Guid>.CreateFailure("Failed to create Blog Post!");
+            return Result<DomainBlogPost>.CreateFailure("Failed to create Blog Post!");
 
-        return Result<Guid>.CreateSuccess(blogPost.Id);
+        await _context.Entry(blogPost).Reference(x => x.Author).LoadAsync();
+
+        return Result<DomainBlogPost>.CreateSuccess(
+            _mapper.MapToDomainWithoutComments(blogPost));
     }
 
-    public async Task<EmptyResult> UpdateAsync(DomainBlogPost updatedBlogPost)
+    public async Task<Result<DomainBlogPost>> UpdateAsync(DomainBlogPost updatedBlogPost)
     {
-        var originalBlogPost = await _context.BlogPosts.FirstOrDefaultAsync(x => x.Id == updatedBlogPost.Id);
+        var originalBlogPost = await _context.BlogPosts
+            .Include(x => x.Author)
+            .FirstOrDefaultAsync(x => x.Id == updatedBlogPost.Id);
 
         if (originalBlogPost is null)
             return Result<DomainBlogPost>.CreateFailure("Blog Post not found!", ErrorType.NotFound);
         
         _mapper.Map(updatedBlogPost, originalBlogPost);
 
-        int updatedCount = await _context.SaveChangesAsync();
-
-        if (updatedCount == 1)
-            return EmptyResult.CreateSuccess();
-
-        return EmptyResult.CreateFailure("Failed to update Blog Post!");
+        await _context.SaveChangesAsync();
+        
+        return Result<DomainBlogPost>.CreateSuccess(
+            _mapper.MapToDomainWithoutComments(originalBlogPost));
     }
 
     public Task DeleteAsync(Guid blogPostId)

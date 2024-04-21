@@ -20,10 +20,12 @@ internal sealed class CommentsRepository: ICommentsRepository
 
     public Task<List<DomainComment>> GetAllBlogPostCommentsAsync(Guid blogPostId)
     {
-        return _mapper.ProjectToDomain(_context.Comments.Where(x => x.BlogPostId == blogPostId)).ToListAsync();
+        return _mapper
+            .ProjectToDomain(_context.Comments.Where(x => x.BlogPostId == blogPostId).AsNoTracking())
+            .ToListAsync();
     }
 
-    public async Task<Result<Guid>> CreateAsync(DomainComment newComment)
+    public async Task<Result<DomainComment>> CreateAsync(DomainComment newComment)
     {
         var comment = _mapper.MapToInfrastructure(newComment);
 
@@ -32,26 +34,27 @@ internal sealed class CommentsRepository: ICommentsRepository
         int createdCount = await _context.SaveChangesAsync();
         
         if (createdCount != 1)
-            return Result<Guid>.CreateFailure("Failed to create Comment!");
+            return Result<DomainComment>.CreateFailure("Failed to create Comment!");
+        
+        await _context.Entry(comment).Reference(x => x.Author).LoadAsync();
 
-        return Result<Guid>.CreateSuccess(comment.Id);
+        return Result<DomainComment>.CreateSuccess(_mapper.MapToDomain(comment));
     }
 
-    public async Task<EmptyResult> UpdateAsync(DomainComment updatedComment)
+    public async Task<Result<DomainComment>> UpdateAsync(DomainComment updatedComment)
     {
-        var originalComment = await _context.Comments.FirstOrDefaultAsync(x => x.Id == updatedComment.Id);
+        var originalComment = await _context.Comments
+            .Include(x => x.Author)
+            .FirstOrDefaultAsync(x => x.Id == updatedComment.Id);
 
         if (originalComment is null)
             return Result<DomainComment>.CreateFailure("Comment not found!", ErrorType.NotFound);
         
         _mapper.Map(updatedComment, originalComment);
 
-        int updatedCount = await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
-        if (updatedCount == 1)
-            return EmptyResult.CreateSuccess();
-
-        return EmptyResult.CreateFailure("Failed to update Comment!");
+        return Result<DomainComment>.CreateSuccess(_mapper.MapToDomain(originalComment));
     }
 
     public Task DeleteAsync(Guid commentId)

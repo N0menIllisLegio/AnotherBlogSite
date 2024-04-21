@@ -18,7 +18,7 @@ internal sealed class CommentsService: ICommentService
         return _commentsRepository.GetAllBlogPostCommentsAsync(blogPostId);
     }
 
-    public Task<Result<Guid>> CreateAsync(Guid authorId, Guid blogPostId, string content)
+    public Task<Result<Comment>> CreateAsync(Guid authorId, Guid blogPostId, string content)
     {
         var comment = new Comment()
         {
@@ -31,7 +31,7 @@ internal sealed class CommentsService: ICommentService
         return _commentsRepository.CreateAsync(comment);
     }
 
-    public Task<EmptyResult> UpdateAsync(Guid commentId, string newContent)
+    public Task<Result<Comment>> UpdateAsync(Guid commentId, string newContent)
     {
         var comment = new Comment()
         {

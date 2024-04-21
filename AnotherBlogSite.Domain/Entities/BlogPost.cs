@@ -9,6 +9,4 @@ public sealed class BlogPost
     
     public Guid AuthorId { get; set; }
     public User Author { get; set; }
-    
-    public ICollection<Comment> Comments { get; set; }
 }

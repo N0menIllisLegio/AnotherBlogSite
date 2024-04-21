@@ -22,7 +22,7 @@ public sealed class BlogPostsController: BaseController
 
     [HttpPost]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType<Guid>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<BlogPost>((int)HttpStatusCode.OK)]
     [ProducesResponseType((int) HttpStatusCode.Forbidden)]
     [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Create([FromBody] BlogPostCreateRequest request)
@@ -39,7 +39,7 @@ public sealed class BlogPostsController: BaseController
 
     [HttpPut]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType<BlogPost>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Update([FromBody] BlogPostUpdateRequest request)
     {
