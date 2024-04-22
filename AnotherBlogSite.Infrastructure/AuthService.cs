@@ -5,6 +5,7 @@ using AnotherBlogSite.Application.Models;
 using AnotherBlogSite.Application.Options;
 using AnotherBlogSite.Application.Services;
 using AnotherBlogSite.Infrastructure.Mapper;
+using AnotherBlogSite.Presentation.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -44,21 +45,21 @@ internal sealed class AuthService: IAuthService
         return EmptyResult.CreateFailure(result.Errors.First().Description);
     }
 
-    public async Task<Result<string>> SignInAsync(string email, string password)
+    public async Task<Result<SignInModel>> SignInAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
 
         if (user is null)
-            return Result<string>.CreateFailure(InvalidEmailOrPasswordError);
+            return Result<SignInModel>.CreateFailure(InvalidEmailOrPasswordError);
 
         bool success = await _userManager.CheckPasswordAsync(user, password);
 
         if (!success)
-            return Result<string>.CreateFailure(InvalidEmailOrPasswordError);
+            return Result<SignInModel>.CreateFailure(InvalidEmailOrPasswordError);
 
         string token = GenerateToken(user);
 
-        return Result<string>.CreateSuccess(token);
+        return Result<SignInModel>.CreateSuccess(new() { AccessToken = token });
     }
     
     private string GenerateToken(InfrastructureUser user)

@@ -20,7 +20,7 @@ public sealed class AuthController: BaseController
     }
 
     [HttpPost]
-    [ProducesResponseType<string>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<SignInModel>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
     {
