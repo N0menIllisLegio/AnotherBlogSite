@@ -8,6 +8,14 @@ namespace AnotherBlogSite.Infrastructure.Mapper;
 [Mapper]
 internal sealed partial class BlogPostMapper
 {
+    [MapProperty(nameof(InfrastructureBlogPost.Content), nameof(DomainBlogPost.Content), Use = nameof(TruncateContent))]
+    [MapperIgnoreSource(nameof(InfrastructureBlogPost.Comments))]
+    public partial DomainBlogPost MapToDomainTruncated(InfrastructureBlogPost blogPosts);
+    
+    [UserMapping(Default = false)]
+    private string TruncateContent(string content) => content.Substring(0, 350);
+    
+    [MapProperty(nameof(InfrastructureBlogPost.Content), nameof(DomainBlogPost.Content), Use = nameof(TruncateContent))]
     public partial IQueryable<DomainBlogPost> ProjectToDomain(IQueryable<InfrastructureBlogPost> blogPosts);
     
     [MapperIgnoreTarget(nameof(InfrastructureBlogPost.Comments))]

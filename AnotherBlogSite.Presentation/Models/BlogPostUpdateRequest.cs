@@ -12,6 +12,6 @@ public sealed class BlogPostUpdateRequest
     public string Title { get; set; }
     
     [Required]
-    [MinLength(100)]
+    [MinLength(500)]
     public string Content { get; set; }
 }
