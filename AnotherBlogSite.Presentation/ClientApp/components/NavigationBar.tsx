@@ -6,15 +6,15 @@ import {signOut} from "../services/AuthService.ts";
 
 export default function NavigationBar() {
     const { isUserAuthorized, setIsUserAuthorized } = useContext(SiteContext) as ISiteContext;
-    
+
     const handleSignOut = () => {
         signOut();
         setIsUserAuthorized(false);
     }
-    
-    return <div className="navBar">
-        <Link to="blogPosts">Blog Posts</Link>
-        { !isUserAuthorized && <Link to="signIn">Sign In</Link> }
-        { isUserAuthorized && <div onClick={() => handleSignOut()}>Sign Out</div>  }
-    </div>;
+
+    return <nav className="navBar">
+        <Link className="navBarButton" to="blogPosts">Blog Posts</Link>
+        { !isUserAuthorized && <Link className="navBarButton" to="signIn">Sign In</Link> }
+        { isUserAuthorized && <div className="navBarButton navBarSignOutButton" onClick={() => handleSignOut()}>Sign Out</div>  }
+    </nav>;
 }

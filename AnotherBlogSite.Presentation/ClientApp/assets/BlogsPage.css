@@ -3,3 +3,9 @@
     bottom: 2rem;
     right: 2rem;
 }
+
+.blogsPages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}

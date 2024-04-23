@@ -1,0 +1,25 @@
+﻿.blogPostListItem {
+    cursor: pointer;
+    width: 350px;
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 1rem;
+    position: relative;
+    top: 0;
+    transition: top ease 0.5s;
+    background-color: #3e4145;
+}
+
+.blogPostListItem:hover {
+    opacity: 80%;
+    top: -10px;
+}
+
+.blogPostListItem h3 {
+    text-align: center;
+}
+
+.blogPostListItem p {
+    text-align: justify;
+    overflow-wrap: break-word;
+}
