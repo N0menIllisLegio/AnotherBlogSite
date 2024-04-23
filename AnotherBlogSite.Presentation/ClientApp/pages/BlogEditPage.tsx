@@ -11,6 +11,7 @@ import {
 import IBlogPost from "../models/IBlogPost.ts";
 import {AxiosError} from "axios";
 import QueryKey from "../utils/QueryKeys.ts";
+import "../assets/BlogEditPage.css";
 
 export default function BlogEditPage() {
     const { blogPostId } = useParams();
@@ -56,11 +57,22 @@ export default function BlogEditPage() {
         }
     }, [blogPost.data?.id]);
 
-    return <div>
-        <input type="text" value={blogTitle} onChange={(e) => setBlogTitle(e.target.value)} />
-        <textarea cols={100} rows={8} value={blogContent} onChange={(e) => setBlogContent(e.target.value)} />
-        <button onClick={handleEdit}>{ !!blogPostId ? "Edit" : "Add" } Post</button>
-        { updateMutation.isError && <div>{updateMutation.error.response?.data ?? updateMutation.error.message}</div> }
-        { createMutation.isError && <div>{createMutation.error.response?.data ?? createMutation.error.message}</div> }
+    return <div className="blogEditContent">
+        <label htmlFor="title">Blog Title:</label>
+        <input name="title" type="text" value={blogTitle} onChange={(e) => setBlogTitle(e.target.value)}/>
+        <small>Title should be at least 10 characters long. Current length: {blogTitle.length}</small>
+        <br/>
+        <label htmlFor="content">Blog Content:</label>
+        <textarea name="content" cols={100} rows={30} value={blogContent}
+                  onChange={(e) => setBlogContent(e.target.value)}/>
+        <small>Content should be at least 500 characters long. Current length: {blogContent.length}</small>
+
+        <div>
+            <button className="actionButton" onClick={handleEdit}>{!!blogPostId ? "Edit" : "Add"} Post</button>
+            {updateMutation.isError &&
+                <div className="errorContainer">{updateMutation.error.response?.data ?? updateMutation.error.message}</div>}
+            {createMutation.isError &&
+                <div className="errorContainer">{createMutation.error.response?.data ?? createMutation.error.message}</div>}
+        </div>
     </div>
 }
