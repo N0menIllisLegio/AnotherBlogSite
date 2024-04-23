@@ -1,32 +1,34 @@
-﻿import Comment from "../models/Comment"
+﻿import IComment from "../models/IComment.ts"
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {deleteComment, updateComment} from "../services/CommentsService.ts";
+import {deleteComment, UpdateComment, updateComment} from "../services/CommentsService.ts";
 import {useState} from "react";
+import {AxiosError} from "axios";
+import Guid from "../models/Guid.ts";
+import QueryKey from "../utils/QueryKeys.ts";
 
-export default function CommentListComponent(props: { comment: Comment }) {
+export default function CommentListComponent(props: { comment: IComment }) {
     const { comment } = props;
     const queryClient = useQueryClient();
     const [isEditing, setIsEditing] = useState(false);
-    const [editingCommentContent, seteEitingCommentContent] = useState(comment.content);
+    const [editingCommentContent, setEditingCommentContent] = useState(comment.content);
 
-
-    // TODO: errors handling
-    const deleteCommentMutation = useMutation({ mutationFn: deleteComment,
+    const deleteCommentMutation = useMutation<void, AxiosError<string>, Guid>({ mutationFn: deleteComment,
         onSuccess: () => {
-            queryClient.setQueryData(["Comments", comment.blogPostId],
-                (comments: Comment[]) => comments.filter(oldPost => oldPost.id !== comment.id));
+            queryClient.setQueryData([QueryKey.Comments, comment.blogPostId],
+                (comments: IComment[]) => comments.filter(oldPost => oldPost.id !== comment.id));
         }
     });
 
-    const updateCommentMutation = useMutation({ mutationFn: updateComment,
+    const updateCommentMutation = useMutation<IComment, AxiosError<string>, UpdateComment>({
+        mutationFn: updateComment,
         onSuccess: (data) => {
-            queryClient.setQueryData(["Comments", comment.blogPostId],
-                (comments: Comment[]) => [...comments.filter(oldPost => oldPost.id !== comment.id), data]);
-            
+            queryClient.setQueryData([QueryKey.Comments, comment.blogPostId],
+                (comments: IComment[]) => [...comments.filter(oldPost => oldPost.id !== comment.id), data]);
+
             setIsEditing(false);
         }
     });
-    
+
     return <div>
         <h4>{comment.author.firstName}</h4>
         <div>{comment.createdDate.toDateString()}</div>
@@ -35,7 +37,7 @@ export default function CommentListComponent(props: { comment: Comment }) {
             isEditing && (
                 <div>
                 <textarea name="Text1" cols={100} rows={8} value={editingCommentContent}
-                          onChange={(e) => seteEitingCommentContent(e.target.value)}/>
+                          onChange={(e) => setEditingCommentContent(e.target.value)}/>
                     <button
                         onClick={() => updateCommentMutation.mutate({
                             commentId: comment.id,
@@ -46,13 +48,16 @@ export default function CommentListComponent(props: { comment: Comment }) {
                     <button
                         onClick={() => {
                             setIsEditing(false);
-                            seteEitingCommentContent(comment.content);
+                            setEditingCommentContent(comment.content);
                         }}>Cancel
                     </button>
-                </div>)
+                </div>
+            )
         }
 
-        {!isEditing && <button onClick={() => setIsEditing(true)}>Edit</button>}
+        { !isEditing && <button onClick={() => setIsEditing(true)}>Edit</button> }
+        { isEditing && updateCommentMutation.isError && <div>{ updateCommentMutation.error.response?.data ?? updateCommentMutation.error.message }</div> }
         <button onClick={() => deleteCommentMutation.mutate(comment.id)}>Delete</button>
+        { deleteCommentMutation.isError && <div>{ deleteCommentMutation.error.response?.data ?? deleteCommentMutation.error.message }</div> }
     </div>
 }

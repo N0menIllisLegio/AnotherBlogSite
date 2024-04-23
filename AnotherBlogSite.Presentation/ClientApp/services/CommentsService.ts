@@ -1,10 +1,10 @@
 ﻿import httpClient from "./RequestProvider.ts";
-import Comment from "../models/Comment.ts";
+import IComment from "../models/IComment.ts";
 import Guid from "../models/Guid.ts";
 
-export const getBlogPostComments = async (blogPostId: Guid): Promise<Comment[]> => {
-    const response = await httpClient.get<Comment[]>(`/Comments/${blogPostId}`);
-    
+export const getBlogPostComments = async (blogPostId: Guid): Promise<IComment[]> => {
+    const response = await httpClient.get<IComment[]>(`/Comments/${blogPostId}`);
+
     response.data.forEach(comment => comment.createdDate = new Date(comment.createdDate));
 
     return response.data;
@@ -15,8 +15,8 @@ export interface CreateComment {
     content: string;
 }
 
-export const createComment = async (createComment: CreateComment): Promise<Comment> => {
-    const response = await httpClient.post<Comment>('/Comments', createComment);
+export const createComment = async (createComment: CreateComment): Promise<IComment> => {
+    const response = await httpClient.post<IComment>('/Comments', createComment);
 
     response.data.createdDate = new Date(response.data.createdDate);
 
@@ -28,11 +28,11 @@ export interface UpdateComment {
     content: string;
 }
 
-export const updateComment = async (updateComment: UpdateComment): Promise<Comment> => {
-    const response = await httpClient.put<Comment>('/Comments', updateComment);
+export const updateComment = async (updateComment: UpdateComment): Promise<IComment> => {
+    const response = await httpClient.put<IComment>('/Comments', updateComment);
 
     response.data.createdDate = new Date(response.data.createdDate);
-    
+
     return response.data;
 }
 

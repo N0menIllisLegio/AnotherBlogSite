@@ -3,19 +3,18 @@ import {getBlogPosts} from "../services/BlogPostsService.ts";
 import BlogPostListComponent from "../components/BlogPostListComponent.tsx";
 import "../assets/BlogsPage.css";
 import {Link} from "react-router-dom";
+import QueryKey from "../utils/QueryKeys.ts";
 
 export default function BlogsPage() {
-    const { data, error, isPending, isError } = useQuery({ queryKey: ["BlogPosts"], queryFn: getBlogPosts });
+    const blogPosts = useQuery({ queryKey: [QueryKey.BlogPosts], queryFn: getBlogPosts });
 
+    if (blogPosts.isPending) return <div>Loading...</div>
 
-    // TODO: Empty page
-    
-    if (isPending) return <div>Loading...</div>
-    
-    if (isError) return <div>Error: {error.message}</div>
-    
+    if (blogPosts.isError) return <div>Error: {blogPosts.error.message}</div>
+
     return <div className="blogsPages">
-        { data?.sort((blogPost1, blogPost2) => blogPost2.createdDate.getTime() - blogPost1.createdDate.getTime()).map(blogPost => <BlogPostListComponent key={blogPost.id} blogPost={blogPost} />) }
+        { blogPosts.isSuccess && blogPosts.data?.length == 0 && <div>No Blog posts</div> }
+        { blogPosts.data?.sort((blogPost1, blogPost2) => blogPost2.createdDate.getTime() - blogPost1.createdDate.getTime()).map(blogPost => <BlogPostListComponent key={blogPost.id} blogPost={blogPost} />) }
         <Link className="addBlogPostButton" to="new">Add Blog Post</Link>
     </div>
 }

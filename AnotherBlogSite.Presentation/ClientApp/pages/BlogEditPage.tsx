@@ -1,8 +1,16 @@
 ﻿import {useNavigate, useParams} from "react-router";
 import {useEffect, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {createBlogPost, getBlogPost, updateBlogPost} from "../services/BlogPostsService.ts";
-import BlogPost from "../models/BlogPost.ts";
+import {
+    CreateBlogPost,
+    createBlogPost,
+    getBlogPost,
+    UpdateBlogPost,
+    updateBlogPost
+} from "../services/BlogPostsService.ts";
+import IBlogPost from "../models/IBlogPost.ts";
+import {AxiosError} from "axios";
+import QueryKey from "../utils/QueryKeys.ts";
 
 export default function BlogEditPage() {
     const { blogPostId } = useParams();
@@ -11,29 +19,28 @@ export default function BlogEditPage() {
     const [blogTitle, setBlogTitle] = useState("");
     const [blogContent, setBlogContent] = useState("");
     const blogPost = useQuery({
-        queryKey: ["BlogPosts", blogPostId],
+        queryKey: [QueryKey.BlogPosts, blogPostId],
         queryFn: () => getBlogPost(blogPostId!),
         enabled: !!blogPostId,
     });
 
-    // TODO: errors handling
-    const createMutation = useMutation({ mutationFn: createBlogPost, onSuccess: (data) => {
-            queryClient.setQueryData(["BlogPosts", blogPostId], data);
-            queryClient.setQueryData(["BlogPosts"], (oldData: BlogPost[]) => [...oldData, data]);
-            
-            navigate(`/blogPosts/${data.id}`, { replace: true });    
+    const createMutation = useMutation<IBlogPost, AxiosError<string>, CreateBlogPost>({ mutationFn: createBlogPost, onSuccess: (data) => {
+            queryClient.setQueryData([QueryKey.BlogPosts, blogPostId], data);
+            queryClient.setQueryData([QueryKey.BlogPosts], (oldData: IBlogPost[]) => [...oldData, data]);
+
+            navigate(`/blogPosts/${data.id}`, { replace: true });
         }
     });
-    
-    const updateMutation = useMutation({ mutationFn: updateBlogPost, onSuccess: (data) => {
-            queryClient.setQueryData(["BlogPosts", blogPostId], data);
-            queryClient.setQueryData(["BlogPosts"],
-                (oldData: BlogPost[]) => [...oldData.filter(x => x.id !== blogPostId), data]);
-            
+
+    const updateMutation = useMutation<IBlogPost, AxiosError<string>, UpdateBlogPost>({ mutationFn: updateBlogPost, onSuccess: (data) => {
+            queryClient.setQueryData([QueryKey.BlogPosts, blogPostId], data);
+            queryClient.setQueryData([QueryKey.BlogPosts],
+                (oldData: IBlogPost[]) => [...oldData.filter(x => x.id !== blogPostId), data]);
+
             navigate(-1);
         }
     });
-    
+
     const handleEdit = () => {
         if (!!blogPostId) {
             updateMutation.mutate({ blogPostId, title: blogTitle, content: blogContent });
@@ -41,18 +48,19 @@ export default function BlogEditPage() {
             createMutation.mutate({ title: blogTitle, content: blogContent });
         }
     }
-    
+
     useEffect(() => {
         if (!blogPost.isPending && !blogPost.isError) {
             setBlogTitle(blogPost.data.title);
             setBlogContent(blogPost.data.content);
-            console.log("Data set");
         }
     }, [blogPost.data?.id]);
-    
+
     return <div>
         <input type="text" value={blogTitle} onChange={(e) => setBlogTitle(e.target.value)} />
         <textarea cols={100} rows={8} value={blogContent} onChange={(e) => setBlogContent(e.target.value)} />
         <button onClick={handleEdit}>{ !!blogPostId ? "Edit" : "Add" } Post</button>
+        { updateMutation.isError && <div>{updateMutation.error.response?.data ?? updateMutation.error.message}</div> }
+        { createMutation.isError && <div>{createMutation.error.response?.data ?? createMutation.error.message}</div> }
     </div>
 }

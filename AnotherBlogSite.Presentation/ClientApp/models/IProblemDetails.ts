@@ -1,4 +1,4 @@
-﻿export interface ProblemDetails {
+﻿export interface IProblemDetails {
     type?: string;
     title?: string;
     status?: number;
@@ -10,6 +10,6 @@ export type ErrorsDictionary = {
     [key: string]: string[];
 };
 
-export interface ValidationProblemDetails extends ProblemDetails {
+export interface IValidationProblemDetails extends IProblemDetails {
     errors?: ErrorsDictionary;
 }

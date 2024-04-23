@@ -25,7 +25,7 @@ export default function SignInPage() {
             let errorMessage = UnknownErrorMessage;
             
             if (err instanceof AxiosError) {
-                errorMessage = err.response?.data ?? errorMessage;                
+                errorMessage = err.response?.data ?? errorMessage;
             } else {
                 console.error(err);
             }
