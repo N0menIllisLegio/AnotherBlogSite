@@ -37,7 +37,7 @@ input, textarea {
 
 .actionButton {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  width: 100px;
+  min-width: 100px;
   background: var(--primary-color);
   font-weight: bold;
   color: var(--background-color);

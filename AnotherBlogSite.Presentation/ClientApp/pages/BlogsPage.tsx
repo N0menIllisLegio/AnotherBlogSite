@@ -10,7 +10,7 @@ export default function BlogsPage() {
     const blogPosts = useQuery({ queryKey: [QueryKey.BlogPosts], queryFn: getBlogPosts });
 
     if (blogPosts.isPending) return <div>Loading...</div>
-    if (blogPosts.isError) return <div>Error: {blogPosts.error.message}</div>
+    if (blogPosts.isError) return <div className="errorContainer">Error: {blogPosts.error.message}</div>
 
     return <div className="blogsPages">
         { blogPosts.isSuccess && blogPosts.data?.length == 0 && <div>No Blog posts</div> }

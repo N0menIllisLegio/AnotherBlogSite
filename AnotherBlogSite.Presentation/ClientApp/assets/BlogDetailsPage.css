@@ -1,0 +1,37 @@
+﻿.blogDetailsContent p {
+    overflow-wrap: break-word;
+    text-wrap: pretty;
+}
+
+.blogDetailsContent .infoSection {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+    align-items: flex-end;
+    gap: 5px
+}
+
+.blogDetailsContent .infoSection .actionButton {
+    font-size: 12px;
+}
+
+.blogDetailsContent .infoSection .editButton {
+    margin-right: 10px;
+}
+
+.blogDetailsContent .infoSection .deleteButton {
+    background: var(--secondary-color);
+}
+
+.blogDetailsContent .infoSection .deleteButton:hover, .blogDetailsContent .infoSection .deleteButton:focus {
+    box-shadow: 0 0 0 2px var(--background-color), 0 0 0 3px var(--secondary-color);
+}
+
+.blogDetailsContent textarea {
+    background-color: #3e4145;
+    border-radius: 10px;
+    width: 500px;
+    color: white;
+}
