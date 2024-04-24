@@ -1,34 +1,10 @@
-﻿import httpClient from "./RequestProvider.ts";
+﻿import {IRequestProvider} from "./RequestProvider.ts";
 import IBlogPost from "../models/IBlogPost.ts";
 import Guid from "../models/Guid.ts";
-
-export const getBlogPosts = async (): Promise<IBlogPost[]> => {
-    const response = await httpClient.get<IBlogPost[]>('/BlogPosts');
-
-    response.data.forEach(x => x.createdDate = new Date(x.createdDate));
-
-    return  response.data;
-}
-
-export const getBlogPost = async (blogPostId: Guid): Promise<IBlogPost> => {
-    const response = await httpClient.get<IBlogPost>(`/BlogPosts/${blogPostId}`);
-
-    response.data.createdDate = new Date(response.data.createdDate);
-
-    return response.data;
-}
 
 export interface CreateBlogPost {
     title: string;
     content: string;
-}
-
-export const createBlogPost = async (createBlogPost: CreateBlogPost): Promise<IBlogPost> => {
-    const response = await httpClient.post<IBlogPost>('/BlogPosts', createBlogPost);
-
-    response.data.createdDate = new Date(response.data.createdDate);
-
-    return response.data;
 }
 
 export interface UpdateBlogPost {
@@ -37,14 +13,47 @@ export interface UpdateBlogPost {
     content: string;
 }
 
-export const updateBlogPost = async (updateBlogPost: UpdateBlogPost): Promise<IBlogPost> => {
-    const response = await httpClient.put<IBlogPost>('/BlogPosts', updateBlogPost);
+export class BlogPostsService {
+    #requestProvider: IRequestProvider;
 
-    response.data.createdDate = new Date(response.data.createdDate);
+    constructor(requestProvider: IRequestProvider) {
+        this.#requestProvider = requestProvider;
+    }
 
-    return response.data;
-}
+    getBlogPosts = async (): Promise<IBlogPost[]> => {
+        const data = await this.#requestProvider.get<IBlogPost[]>('/BlogPosts');
 
-export const deleteBlogPost = async (blogPostId: Guid): Promise<void> => {
-    await httpClient.delete<null>(`/BlogPosts/${blogPostId}`);
+        data.forEach(x => x.createdDate = new Date(x.createdDate));
+
+        return data;
+    }
+
+    getBlogPost = async (blogPostId: Guid): Promise<IBlogPost> => {
+        const data = await this.#requestProvider.get<IBlogPost>(`/BlogPosts/${blogPostId}`);
+
+        data.createdDate = new Date(data.createdDate);
+
+        return data;
+    }
+
+    createBlogPost = async (createBlogPost: CreateBlogPost): Promise<IBlogPost> => {
+        const data = await this.#requestProvider.post<CreateBlogPost, IBlogPost>('/BlogPosts', createBlogPost);
+
+        data.createdDate = new Date(data.createdDate);
+
+        return data;
+    }
+
+    updateBlogPost = async (updateBlogPost: UpdateBlogPost): Promise<IBlogPost> => {
+        const data = await this.#requestProvider.put<UpdateBlogPost, IBlogPost>('/BlogPosts', updateBlogPost);
+
+        data.createdDate = new Date(data.createdDate);
+
+        return data;
+    }
+
+    deleteBlogPost = async (blogPostId: Guid): Promise<void> => {
+        console.log(this.#requestProvider);
+        await this.#requestProvider.delete<null>(`/BlogPosts/${blogPostId}`);
+    }
 }

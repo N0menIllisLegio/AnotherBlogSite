@@ -1,19 +1,21 @@
 ﻿import IComment from "../models/IComment.ts"
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {deleteComment, UpdateComment, updateComment} from "../services/CommentsService.ts";
+import {UpdateComment} from "../services/CommentsService.ts";
 import {useState} from "react";
 import {AxiosError} from "axios";
 import Guid from "../models/Guid.ts";
 import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/CommentListComponent.css";
+import {useCommentsService} from "../hooks/useDependencyInjection.ts";
 
 export default function CommentListComponent(props: { comment: IComment }) {
     const { comment } = props;
     const queryClient = useQueryClient();
     const [isEditing, setIsEditing] = useState(false);
     const [editingCommentContent, setEditingCommentContent] = useState(comment.content);
+    const commentsService = useCommentsService();
 
-    const deleteCommentMutation = useMutation<void, AxiosError<string>, Guid>({ mutationFn: deleteComment,
+    const deleteCommentMutation = useMutation<void, AxiosError<string>, Guid>({ mutationFn: commentsService.deleteComment,
         onSuccess: () => {
             queryClient.setQueryData([QueryKey.Comments, comment.blogPostId],
                 (comments: IComment[]) => comments.filter(oldPost => oldPost.id !== comment.id));
@@ -21,7 +23,7 @@ export default function CommentListComponent(props: { comment: IComment }) {
     });
 
     const updateCommentMutation = useMutation<IComment, AxiosError<string>, UpdateComment>({
-        mutationFn: updateComment,
+        mutationFn: commentsService.updateComment,
         onSuccess: (data) => {
             queryClient.setQueryData([QueryKey.Comments, comment.blogPostId],
                 (comments: IComment[]) => [...comments.filter(oldPost => oldPost.id !== comment.id), data]);

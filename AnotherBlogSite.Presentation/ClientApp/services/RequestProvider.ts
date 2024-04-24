@@ -1,58 +1,40 @@
-﻿import axios from "axios";
-import {getToken, signOut} from "./AuthService.ts";
-import {IValidationProblemDetails} from "../models/IProblemDetails.ts";
-import {UnknownErrorMessage} from "../utils/ErrorsUtils.ts";
+﻿import {AxiosInstance} from "axios";
 
-const httpClient = axios.create({
-    baseURL: 'https://localhost:7281',
-    transformResponse: (data, _, status) => {
-        if (status === 204)
-            return null;
+export interface IRequestProvider {
+    get<TResponse>(path: string, signal?: AbortSignal): Promise<TResponse>;
+    post<TRequest, TResponse>(path: string, request: TRequest, signal?: AbortSignal): Promise<TResponse>;
+    put<TRequest, TResponse>(path: string, request: TRequest, signal?: AbortSignal): Promise<TResponse>;
+    delete<TResponse>(path: string, signal?: AbortSignal): Promise<TResponse>;
+}
 
-        if (status === 401 || status === 403) {
-            signOut();
+export class AxiosRequestProvider implements IRequestProvider {
+    #axiosProvider: AxiosInstance;
 
-            // TODO: Rework auth flow
-            return "Unauthorized! Please sign in.";
-        }
-
-        let result = JSON.parse(data);
-
-        if (status === 400 || status === 404) {
-            const validationError: IValidationProblemDetails = result;
-            let errorMessage = UnknownErrorMessage;
-
-            if (validationError) {
-                const errorsDictionary = validationError?.errors;
-
-                if (errorsDictionary !== undefined) {
-                    let validationErrorMessage = "";
-
-                    for (let key in errorsDictionary) {
-                        validationErrorMessage += errorsDictionary[key].join("\n");
-                        validationErrorMessage += "\n\n";
-                    }
-
-                    if (validationErrorMessage !== "")
-                        errorMessage = validationErrorMessage;
-                }
-            }
-
-            return errorMessage;
-        }
-
-        return result;
-    }
-});
-
-httpClient.interceptors.request.use((config) => {
-    const token = getToken();
-
-    if (token !== null) {
-        config.headers.Authorization = `Bearer ${token}`;
+    constructor(axiosProvider: AxiosInstance) {
+        this.#axiosProvider = axiosProvider;
     }
 
-    return config;
-});
+    async get<TResponse>(path: string, signal?: AbortSignal): Promise<TResponse> {
+        const response = await this.#axiosProvider.get<TResponse>(path, { signal });
 
-export default httpClient;
+        return response.data;
+    }
+
+    async post<TRequest, TResponse>(path: string, request: TRequest, signal?: AbortSignal): Promise<TResponse> {
+        const response = await this.#axiosProvider.post<TResponse>(path, request, { signal });
+
+        return response.data;
+    }
+
+    async put<TRequest, TResponse>(path: string, request: TRequest, signal?: AbortSignal): Promise<TResponse> {
+        const response = await this.#axiosProvider.put<TResponse>(path, request, { signal });
+
+        return response.data;
+    }
+
+    async delete<TResponse>(path: string, signal?: AbortSignal): Promise<TResponse> {
+        const response = await this.#axiosProvider.delete<TResponse>(path, { signal });
+
+        return response.data;
+    }
+}

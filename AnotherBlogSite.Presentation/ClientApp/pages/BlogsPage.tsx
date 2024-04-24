@@ -1,13 +1,14 @@
 ﻿import {useQuery} from "@tanstack/react-query";
-import {getBlogPosts} from "../services/BlogPostsService.ts";
 import BlogPostListComponent from "../components/BlogPostListComponent.tsx";
 import "../assets/BlogsPage.css";
 import QueryKey from "../utils/QueryKeys.ts";
 import {useNavigate} from "react-router";
+import {useBlogPostsService} from "../hooks/useDependencyInjection.ts";
 
 export default function BlogsPage() {
     const navigate = useNavigate();
-    const blogPosts = useQuery({ queryKey: [QueryKey.BlogPosts], queryFn: getBlogPosts });
+    const blogPostsService = useBlogPostsService();
+    const blogPosts = useQuery({ queryKey: [QueryKey.BlogPosts], queryFn: blogPostsService.getBlogPosts });
 
     if (blogPosts.isPending) return <div>Loading...</div>
     if (blogPosts.isError) return <div className="errorContainer">Error: {blogPosts.error.message}</div>

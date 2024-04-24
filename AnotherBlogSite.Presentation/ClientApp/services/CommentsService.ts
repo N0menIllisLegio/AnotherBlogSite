@@ -1,26 +1,10 @@
-﻿import httpClient from "./RequestProvider.ts";
+﻿import {IRequestProvider} from "./RequestProvider.ts";
 import IComment from "../models/IComment.ts";
 import Guid from "../models/Guid.ts";
-
-export const getBlogPostComments = async (blogPostId: Guid): Promise<IComment[]> => {
-    const response = await httpClient.get<IComment[]>(`/Comments/${blogPostId}`);
-
-    response.data.forEach(comment => comment.createdDate = new Date(comment.createdDate));
-
-    return response.data;
-}
 
 export interface CreateComment {
     blogPostId: Guid;
     content: string;
-}
-
-export const createComment = async (createComment: CreateComment): Promise<IComment> => {
-    const response = await httpClient.post<IComment>('/Comments', createComment);
-
-    response.data.createdDate = new Date(response.data.createdDate);
-
-    return response.data;
 }
 
 export interface UpdateComment {
@@ -28,14 +12,38 @@ export interface UpdateComment {
     content: string;
 }
 
-export const updateComment = async (updateComment: UpdateComment): Promise<IComment> => {
-    const response = await httpClient.put<IComment>('/Comments', updateComment);
+export class CommentsService {
+    #requestProvider: IRequestProvider;
 
-    response.data.createdDate = new Date(response.data.createdDate);
+    constructor(requestProvider: IRequestProvider) {
+        this.#requestProvider = requestProvider;
+    }
 
-    return response.data;
-}
+    getBlogPostComments = async (blogPostId: Guid): Promise<IComment[]> => {
+        const data = await this.#requestProvider.get<IComment[]>(`/Comments/${blogPostId}`);
 
-export const deleteComment = async (commentId: Guid): Promise<void> => {
-    await httpClient.delete<null>(`/Comments/${commentId}`);
+        data.forEach(comment => comment.createdDate = new Date(comment.createdDate));
+
+        return data;
+    }
+
+    createComment = async (createComment: CreateComment): Promise<IComment> => {
+        const data = await this.#requestProvider.post<CreateComment, IComment>('/Comments', createComment);
+
+        data.createdDate = new Date(data.createdDate);
+
+        return data;
+    }
+
+    updateComment = async (updateComment: UpdateComment): Promise<IComment> => {
+        const data = await this.#requestProvider.put<UpdateComment, IComment>('/Comments', updateComment);
+
+        data.createdDate = new Date(data.createdDate);
+
+        return data;
+    }
+
+    deleteComment = async (commentId: Guid): Promise<void> => {
+        await this.#requestProvider.delete<null>(`/Comments/${commentId}`);
+    }
 }

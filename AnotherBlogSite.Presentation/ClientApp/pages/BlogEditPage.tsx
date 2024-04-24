@@ -1,17 +1,12 @@
 ﻿import {useNavigate, useParams} from "react-router";
 import {useEffect, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {
-    CreateBlogPost,
-    createBlogPost,
-    getBlogPost,
-    UpdateBlogPost,
-    updateBlogPost
-} from "../services/BlogPostsService.ts";
+import {CreateBlogPost, UpdateBlogPost} from "../services/BlogPostsService.ts";
 import IBlogPost from "../models/IBlogPost.ts";
 import {AxiosError} from "axios";
 import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/BlogEditPage.css";
+import {useBlogPostsService} from "../hooks/useDependencyInjection.ts";
 
 export default function BlogEditPage() {
     const { blogPostId } = useParams();
@@ -19,13 +14,14 @@ export default function BlogEditPage() {
     const queryClient = useQueryClient();
     const [blogTitle, setBlogTitle] = useState("");
     const [blogContent, setBlogContent] = useState("");
+    const blogPostsService = useBlogPostsService();
     const blogPost = useQuery({
         queryKey: [QueryKey.BlogPosts, blogPostId],
-        queryFn: () => getBlogPost(blogPostId!),
+        queryFn: () => blogPostsService.getBlogPost(blogPostId!),
         enabled: !!blogPostId,
     });
 
-    const createMutation = useMutation<IBlogPost, AxiosError<string>, CreateBlogPost>({ mutationFn: createBlogPost, onSuccess: (data) => {
+    const createMutation = useMutation<IBlogPost, AxiosError<string>, CreateBlogPost>({ mutationFn: blogPostsService.createBlogPost, onSuccess: (data) => {
             queryClient.setQueryData([QueryKey.BlogPosts, blogPostId], data);
             queryClient.setQueryData([QueryKey.BlogPosts], (oldData: IBlogPost[]) => [...oldData, data]);
 
@@ -33,7 +29,7 @@ export default function BlogEditPage() {
         }
     });
 
-    const updateMutation = useMutation<IBlogPost, AxiosError<string>, UpdateBlogPost>({ mutationFn: updateBlogPost, onSuccess: (data) => {
+    const updateMutation = useMutation<IBlogPost, AxiosError<string>, UpdateBlogPost>({ mutationFn: blogPostsService.updateBlogPost, onSuccess: (data) => {
             queryClient.setQueryData([QueryKey.BlogPosts, blogPostId], data);
             queryClient.setQueryData([QueryKey.BlogPosts],
                 (oldData: IBlogPost[]) => [...oldData.filter(x => x.id !== blogPostId), data]);

@@ -1,7 +1,6 @@
 ﻿import {useNavigate, useParams} from "react-router";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {deleteBlogPost, getBlogPost} from "../services/BlogPostsService.ts";
-import {CreateComment, createComment, getBlogPostComments} from "../services/CommentsService.ts";
+import {CreateComment} from "../services/CommentsService.ts";
 import CommentListComponent from "../components/CommentListComponent.tsx";
 import {useState} from "react";
 import IBlogPost from "../models/IBlogPost.ts";
@@ -10,18 +9,21 @@ import {AxiosError} from "axios";
 import IComment from "../models/IComment.ts";
 import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/BlogDetailsPage.css";
+import {useBlogPostsService, useCommentsService} from "../hooks/useDependencyInjection.ts";
 
 export default function BlogDetailsPage() {
     const { blogPostId } = useParams();
     const [newCommentContent, setNewCommentContent] = useState("");
     const navigate = useNavigate();
+    const blogPostsService = useBlogPostsService();
+    const commentsService = useCommentsService();
 
     const blogPost = useQuery({
         queryKey: [QueryKey.BlogPosts, blogPostId],
-        queryFn: () => getBlogPost(blogPostId!)
+        queryFn: () => blogPostsService.getBlogPost(blogPostId!)
     });
 
-    const deleteBlogMutation = useMutation<void, AxiosError<string>, Guid>({ mutationFn: deleteBlogPost,
+    const deleteBlogMutation = useMutation<void, AxiosError<string>, Guid>({ mutationFn: blogPostsService.deleteBlogPost,
         onSuccess: () => {
             queryClient.setQueryData([QueryKey.BlogPosts],
                 (oldPosts: IBlogPost[]) => oldPosts.filter(oldPost => oldPost.id !== blogPostId));
@@ -32,14 +34,14 @@ export default function BlogDetailsPage() {
 
     const comments = useQuery({
         queryKey: [QueryKey.Comments, blogPostId],
-        queryFn: () => getBlogPostComments(blogPostId!),
+        queryFn: () => commentsService.getBlogPostComments(blogPostId!),
         enabled: !!blogPost.data?.id
     });
 
     const queryClient = useQueryClient();
 
     const createCommentMutation = useMutation<IComment, AxiosError<string>, CreateComment>({
-        mutationFn: createComment, onSuccess: (data) => {
+        mutationFn: commentsService.createComment, onSuccess: (data) => {
             setNewCommentContent("");
             queryClient.setQueryData([QueryKey.Comments, blogPostId],
                 (oldComments: IComment[]) => [...oldComments, data]);

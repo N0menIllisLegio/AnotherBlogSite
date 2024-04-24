@@ -7,7 +7,7 @@ import './assets/index.css'
 import SignInPage from "./pages/SignInPage.tsx";
 import BlogsPage from "./pages/BlogsPage.tsx";
 import BlogDetailsPage from "./pages/BlogDetailsPage.tsx";
-import SiteContextProvider from "./components/SiteContext.tsx";
+import AuthContextProvider from "./components/AuthContext.tsx";
 import BlogEditPage from "./pages/BlogEditPage.tsx";
 
 const router = createBrowserRouter([
@@ -48,9 +48,9 @@ const queryClient = new QueryClient({});
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <SiteContextProvider>
+            <AuthContextProvider>
                 <RouterProvider router={router} />
-            </SiteContextProvider>
+            </AuthContextProvider>
         </QueryClientProvider>
     </React.StrictMode>,
 )
