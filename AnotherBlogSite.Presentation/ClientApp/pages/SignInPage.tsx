@@ -19,7 +19,7 @@ export default function SignInPage() {
             await signIn(email, password);
             navigate("/");
         } catch (err) {
-            if (err instanceof  Error) {
+            if (err instanceof Error) {
                 setError(err.message)
             } else {
                 setError(String(err));

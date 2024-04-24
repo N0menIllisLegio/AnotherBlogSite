@@ -5,11 +5,11 @@ import CommentListComponent from "../components/CommentListComponent.tsx";
 import {useState} from "react";
 import IBlogPost from "../models/IBlogPost.ts";
 import Guid from "../models/Guid.ts";
-import {AxiosError} from "axios";
 import IComment from "../models/IComment.ts";
 import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/BlogDetailsPage.css";
 import {useBlogPostsService, useCommentsService} from "../hooks/useDependencyInjection.ts";
+import {RequestError} from "../services/RequestProvider.ts";
 
 export default function BlogDetailsPage() {
     const { blogPostId } = useParams();
@@ -23,7 +23,7 @@ export default function BlogDetailsPage() {
         queryFn: () => blogPostsService.getBlogPost(blogPostId!)
     });
 
-    const deleteBlogMutation = useMutation<void, AxiosError<string>, Guid>({ mutationFn: blogPostsService.deleteBlogPost,
+    const deleteBlogMutation = useMutation<void, RequestError, Guid>({ mutationFn: blogPostsService.deleteBlogPost,
         onSuccess: () => {
             queryClient.setQueryData([QueryKey.BlogPosts],
                 (oldPosts: IBlogPost[]) => oldPosts.filter(oldPost => oldPost.id !== blogPostId));
@@ -40,7 +40,7 @@ export default function BlogDetailsPage() {
 
     const queryClient = useQueryClient();
 
-    const createCommentMutation = useMutation<IComment, AxiosError<string>, CreateComment>({
+    const createCommentMutation = useMutation<IComment, RequestError, CreateComment>({
         mutationFn: commentsService.createComment, onSuccess: (data) => {
             setNewCommentContent("");
             queryClient.setQueryData([QueryKey.Comments, blogPostId],

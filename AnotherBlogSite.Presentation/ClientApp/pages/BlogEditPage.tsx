@@ -3,10 +3,10 @@ import {useEffect, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {CreateBlogPost, UpdateBlogPost} from "../services/BlogPostsService.ts";
 import IBlogPost from "../models/IBlogPost.ts";
-import {AxiosError} from "axios";
 import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/BlogEditPage.css";
 import {useBlogPostsService} from "../hooks/useDependencyInjection.ts";
+import {RequestError} from "../services/RequestProvider.ts";
 
 export default function BlogEditPage() {
     const { blogPostId } = useParams();
@@ -21,7 +21,7 @@ export default function BlogEditPage() {
         enabled: !!blogPostId,
     });
 
-    const createMutation = useMutation<IBlogPost, AxiosError<string>, CreateBlogPost>({ mutationFn: blogPostsService.createBlogPost, onSuccess: (data) => {
+    const createMutation = useMutation<IBlogPost, RequestError, CreateBlogPost>({ mutationFn: blogPostsService.createBlogPost, onSuccess: (data) => {
             queryClient.setQueryData([QueryKey.BlogPosts, blogPostId], data);
             queryClient.setQueryData([QueryKey.BlogPosts], (oldData: IBlogPost[]) => [...oldData, data]);
 
@@ -29,7 +29,7 @@ export default function BlogEditPage() {
         }
     });
 
-    const updateMutation = useMutation<IBlogPost, AxiosError<string>, UpdateBlogPost>({ mutationFn: blogPostsService.updateBlogPost, onSuccess: (data) => {
+    const updateMutation = useMutation<IBlogPost, RequestError, UpdateBlogPost>({ mutationFn: blogPostsService.updateBlogPost, onSuccess: (data) => {
             queryClient.setQueryData([QueryKey.BlogPosts, blogPostId], data);
             queryClient.setQueryData([QueryKey.BlogPosts],
                 (oldData: IBlogPost[]) => [...oldData.filter(x => x.id !== blogPostId), data]);
