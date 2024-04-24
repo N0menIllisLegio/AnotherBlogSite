@@ -6,7 +6,7 @@ import Guid from "../models/Guid.ts";
 import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/CommentListComponent.css";
 import {useCommentsService} from "../hooks/useDependencyInjection.ts";
-import {RequestError} from "../services/RequestProvider.ts";
+import RequestError from "../models/RequestError.ts";
 
 export default function CommentListComponent(props: { comment: IComment }) {
     const { comment } = props;

@@ -1,6 +1,6 @@
-﻿import {IRequestProvider} from "./RequestProvider.ts";
-import IBlogPost from "../models/IBlogPost.ts";
+﻿import IBlogPost from "../models/IBlogPost.ts";
 import Guid from "../models/Guid.ts";
+import IRequestProvider from "../models/IRequestProvider.ts";
 
 export interface CreateBlogPost {
     title: string;
@@ -13,7 +13,7 @@ export interface UpdateBlogPost {
     content: string;
 }
 
-export class BlogPostsService {
+export default class BlogPostsService {
     #requestProvider: IRequestProvider;
 
     constructor(requestProvider: IRequestProvider) {

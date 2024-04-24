@@ -1,22 +1,8 @@
 ﻿import {AxiosError, AxiosInstance} from "axios";
+import IRequestProvider from "../models/IRequestProvider.ts";
+import RequestError from "../models/RequestError.ts";
 
-export class RequestError extends Error {
-    constructor(message?: string | undefined | null) {
-        if (message)
-            super(message);
-        else
-            super("Oops unexpected error happened... Please try again later");
-    }
-}
-
-export interface IRequestProvider {
-    get<TResponse>(path: string, signal?: AbortSignal): Promise<TResponse>;
-    post<TRequest, TResponse>(path: string, request: TRequest, signal?: AbortSignal): Promise<TResponse>;
-    put<TRequest, TResponse>(path: string, request: TRequest, signal?: AbortSignal): Promise<TResponse>;
-    delete<TResponse>(path: string, signal?: AbortSignal): Promise<TResponse>;
-}
-
-export class AxiosRequestProvider implements IRequestProvider {
+export default class AxiosRequestProvider implements IRequestProvider {
     #axiosProvider: AxiosInstance;
 
     constructor(axiosProvider: AxiosInstance) {

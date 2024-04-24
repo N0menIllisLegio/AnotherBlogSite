@@ -9,7 +9,7 @@ import IComment from "../models/IComment.ts";
 import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/BlogDetailsPage.css";
 import {useBlogPostsService, useCommentsService} from "../hooks/useDependencyInjection.ts";
-import {RequestError} from "../services/RequestProvider.ts";
+import RequestError from "../models/RequestError.ts";
 
 export default function BlogDetailsPage() {
     const { blogPostId } = useParams();

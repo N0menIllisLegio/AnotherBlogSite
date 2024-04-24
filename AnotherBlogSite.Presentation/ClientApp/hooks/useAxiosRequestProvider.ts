@@ -3,8 +3,9 @@ import {useContext, useEffect} from "react";
 // import useRefreshToken from "./useRefreshToken";
 import {IAuthContext, AuthContext} from "../components/AuthContext.tsx";
 import {useNavigate} from "react-router";
-import {AxiosRequestProvider, IRequestProvider} from "../services/RequestProvider.ts";
 import {IValidationProblemDetails} from "../models/IProblemDetails.ts";
+import IRequestProvider from "../models/IRequestProvider.ts";
+import AxiosRequestProvider from "../models/AxiosRequestProvider.ts";
 
 const httpClient = axios.create({
     baseURL: 'https://localhost:7281',
@@ -44,7 +45,7 @@ const httpClient = axios.create({
     }
 });
 
-const useRequestProvider = (): IRequestProvider => {
+const useAxiosRequestProvider = (): IRequestProvider => {
     // const refresh = useRefreshToken();
     const { accessToken, updateAccessToken } = useContext(AuthContext) as IAuthContext;
     const navigate = useNavigate();
@@ -88,4 +89,4 @@ const useRequestProvider = (): IRequestProvider => {
     return new AxiosRequestProvider(httpClient);
 }
 
-export default useRequestProvider;
+export default useAxiosRequestProvider;

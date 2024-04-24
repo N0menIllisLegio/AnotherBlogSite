@@ -1,6 +1,6 @@
-﻿import {IRequestProvider} from "./RequestProvider.ts";
-import IComment from "../models/IComment.ts";
+﻿import IComment from "../models/IComment.ts";
 import Guid from "../models/Guid.ts";
+import IRequestProvider from "../models/IRequestProvider.ts";
 
 export interface CreateComment {
     blogPostId: Guid;
@@ -12,7 +12,7 @@ export interface UpdateComment {
     content: string;
 }
 
-export class CommentsService {
+export default class CommentsService {
     #requestProvider: IRequestProvider;
 
     constructor(requestProvider: IRequestProvider) {

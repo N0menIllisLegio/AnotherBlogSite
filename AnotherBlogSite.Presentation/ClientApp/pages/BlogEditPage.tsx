@@ -6,7 +6,7 @@ import IBlogPost from "../models/IBlogPost.ts";
 import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/BlogEditPage.css";
 import {useBlogPostsService} from "../hooks/useDependencyInjection.ts";
-import {RequestError} from "../services/RequestProvider.ts";
+import RequestError from "../models/RequestError.ts";
 
 export default function BlogEditPage() {
     const { blogPostId } = useParams();

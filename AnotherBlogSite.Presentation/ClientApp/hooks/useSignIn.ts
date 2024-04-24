@@ -1,4 +1,4 @@
-﻿import useRequestProvider from "./useRequestProvider.ts";
+﻿import useAxiosRequestProvider from "./useAxiosRequestProvider.ts";
 import {useContext} from "react";
 import {AuthContext, IAuthContext} from "../components/AuthContext.tsx";
 
@@ -7,7 +7,7 @@ interface ISignIn {
 }
 
 const useSignIn = (): (email: string, password: string) => Promise<void> => {
-    const requestProvider = useRequestProvider();
+    const requestProvider = useAxiosRequestProvider();
     const { updateAccessToken } = useContext(AuthContext) as IAuthContext;
 
     const signIn = async (email: string, password: string) => {
