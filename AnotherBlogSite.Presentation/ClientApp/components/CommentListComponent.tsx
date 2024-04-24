@@ -5,6 +5,7 @@ import {useState} from "react";
 import {AxiosError} from "axios";
 import Guid from "../models/Guid.ts";
 import QueryKey from "../utils/QueryKeys.ts";
+import "../assets/CommentListComponent.css";
 
 export default function CommentListComponent(props: { comment: IComment }) {
     const { comment } = props;
@@ -29,16 +30,19 @@ export default function CommentListComponent(props: { comment: IComment }) {
         }
     });
 
-    return <div>
-        <h4>{comment.author.firstName}</h4>
-        <div>{comment.createdDate.toDateString()}</div>
-        { !isEditing && <div>{comment.content}</div> }
+    return <div className="commentListItemContent">
+        <div><b>{comment.author.firstName} {comment.author.lastName}</b> (<i>{comment.author.email}</i>)</div>
+        <small>{comment.createdDate.toLocaleString()}</small>
+        { !isEditing && <p className="comment">{comment.content}</p> }
         {
             isEditing && (
                 <div>
                 <textarea name="Text1" cols={100} rows={8} value={editingCommentContent}
-                          onChange={(e) => setEditingCommentContent(e.target.value)}/>
+                          onChange={(e) => setEditingCommentContent(e.target.value)} />
+                    <br/>
                     <button
+                        style={{ marginRight: "8px" }}
+                        className="actionButton"
                         onClick={() => updateCommentMutation.mutate({
                             commentId: comment.id,
                             content: editingCommentContent,
@@ -46,6 +50,7 @@ export default function CommentListComponent(props: { comment: IComment }) {
                     </button>
 
                     <button
+                        className="actionButton deleteButton"
                         onClick={() => {
                             setIsEditing(false);
                             setEditingCommentContent(comment.content);
@@ -55,9 +60,11 @@ export default function CommentListComponent(props: { comment: IComment }) {
             )
         }
 
-        { !isEditing && <button onClick={() => setIsEditing(true)}>Edit</button> }
-        { isEditing && updateCommentMutation.isError && <div>{ updateCommentMutation.error.response?.data ?? updateCommentMutation.error.message }</div> }
-        <button onClick={() => deleteCommentMutation.mutate(comment.id)}>Delete</button>
-        { deleteCommentMutation.isError && <div>{ deleteCommentMutation.error.response?.data ?? deleteCommentMutation.error.message }</div> }
+        { !isEditing && <button style={{ marginRight: "8px" }}
+            className="actionButton" onClick={() => setIsEditing(true)}>Edit</button> }
+        { isEditing && updateCommentMutation.isError && <div className="errorContainer">{ updateCommentMutation.error.response?.data ?? updateCommentMutation.error.message }</div> }
+        { !isEditing && <button
+            className="actionButton deleteButton" onClick={() => deleteCommentMutation.mutate(comment.id)}>Delete</button> }
+        { !isEditing && deleteCommentMutation.isError && <div className="errorContainer">{ deleteCommentMutation.error.response?.data ?? deleteCommentMutation.error.message }</div> }
     </div>
 }

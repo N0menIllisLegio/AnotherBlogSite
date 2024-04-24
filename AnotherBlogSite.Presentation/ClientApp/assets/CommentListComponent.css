@@ -1,0 +1,27 @@
+﻿.commentListItemContent {
+    margin-bottom: 2rem;
+    border: 1px dotted white;
+    padding: 1rem;
+    border-radius: 10px;
+    max-width: 800px;
+}
+
+.commentListItemContent .actionButton {
+    font-size: 10px;
+    min-width: 50px;
+    margin-top: 8px;
+}
+
+.commentListItemContent small {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.commentListItemContent .deleteButton {
+    background: var(--secondary-color);
+}
+
+.commentListItemContent .deleteButton:hover, .commentListItemContent .deleteButton:focus {
+    box-shadow: 0 0 0 2px var(--background-color), 0 0 0 3px var(--secondary-color);
+}
