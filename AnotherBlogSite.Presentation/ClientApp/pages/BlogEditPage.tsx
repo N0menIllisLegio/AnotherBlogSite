@@ -65,10 +65,8 @@ export default function BlogEditPage() {
 
         <div>
             <button className="actionButton" onClick={handleEdit}>{!!blogPostId ? "Edit" : "Add"} Post</button>
-            {updateMutation.isError &&
-                <div className="errorContainer">{updateMutation.error.response?.data ?? updateMutation.error.message}</div>}
-            {createMutation.isError &&
-                <div className="errorContainer">{createMutation.error.response?.data ?? createMutation.error.message}</div>}
+            {updateMutation.isError && <div className="errorContainer">{updateMutation.error.message}</div>}
+            {createMutation.isError && <div className="errorContainer">{createMutation.error.message}</div>}
         </div>
     </div>
 }

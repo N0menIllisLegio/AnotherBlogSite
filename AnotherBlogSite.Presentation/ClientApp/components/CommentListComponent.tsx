@@ -64,9 +64,9 @@ export default function CommentListComponent(props: { comment: IComment }) {
 
         { !isEditing && <button style={{ marginRight: "8px" }}
             className="actionButton" onClick={() => setIsEditing(true)}>Edit</button> }
-        { isEditing && updateCommentMutation.isError && <div className="errorContainer">{ updateCommentMutation.error.response?.data ?? updateCommentMutation.error.message }</div> }
+        { isEditing && updateCommentMutation.isError && <div className="errorContainer">{ updateCommentMutation.error.message }</div> }
         { !isEditing && <button
             className="actionButton deleteButton" onClick={() => deleteCommentMutation.mutate(comment.id)}>Delete</button> }
-        { !isEditing && deleteCommentMutation.isError && <div className="errorContainer">{ deleteCommentMutation.error.response?.data ?? deleteCommentMutation.error.message }</div> }
+        { !isEditing && deleteCommentMutation.isError && <div className="errorContainer">{ deleteCommentMutation.error.message }</div> }
     </div>
 }

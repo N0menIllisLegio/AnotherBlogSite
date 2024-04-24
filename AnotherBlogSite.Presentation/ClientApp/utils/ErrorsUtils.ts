@@ -1,1 +1,0 @@
-﻿export const UnknownErrorMessage = "Oops unexpected error happened... Please try again later";

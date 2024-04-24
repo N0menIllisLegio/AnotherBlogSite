@@ -1,7 +1,5 @@
 ﻿import {useState} from "react";
 import {useNavigate} from "react-router";
-import {AxiosError} from "axios";
-import {UnknownErrorMessage} from "../utils/ErrorsUtils.ts";
 import "../assets/SignIn.css"
 import useSignIn from "../hooks/useSignIn.ts";
 
@@ -21,15 +19,11 @@ export default function SignInPage() {
             await signIn(email, password);
             navigate("/");
         } catch (err) {
-            let errorMessage = UnknownErrorMessage;
-
-            if (err instanceof AxiosError) {
-                errorMessage = err.response?.data ?? errorMessage;
+            if (err instanceof  Error) {
+                setError(err.message)
             } else {
-                console.error(err);
+                setError(String(err));
             }
-
-            setError(errorMessage);
         } finally {
             setSignInExecuting(false);
         }

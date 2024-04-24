@@ -5,7 +5,6 @@ import {IAuthContext, AuthContext} from "../components/AuthContext.tsx";
 import {useNavigate} from "react-router";
 import {AxiosRequestProvider, IRequestProvider} from "../services/RequestProvider.ts";
 import {IValidationProblemDetails} from "../models/IProblemDetails.ts";
-import {UnknownErrorMessage} from "../utils/ErrorsUtils.ts";
 
 const httpClient = axios.create({
     baseURL: 'https://localhost:7281',
@@ -13,16 +12,14 @@ const httpClient = axios.create({
         if (status === 204)
             return null;
 
-        if (status === 401 || status === 403) {
-            // TODO: Rework auth flow
+        if (status === 401 || status === 403)
             return "Unauthorized! Please sign in.";
-        }
 
         let result = JSON.parse(data);
 
         if (status === 400 || status === 404) {
             const validationError: IValidationProblemDetails = result;
-            let errorMessage = UnknownErrorMessage;
+            let errorMessage = null;
 
             if (validationError) {
                 const errorsDictionary = validationError?.errors;

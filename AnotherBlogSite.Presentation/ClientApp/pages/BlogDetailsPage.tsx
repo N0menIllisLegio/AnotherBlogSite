@@ -62,7 +62,7 @@ export default function BlogDetailsPage() {
         </div>
 
         {deleteBlogMutation.isError && <div className="errorContainer">Failed to delete a
-            blog: {deleteBlogMutation.error.response?.data ?? deleteBlogMutation.error.message}</div>}
+            blog: {deleteBlogMutation.error.message}</div>}
 
         <p>{blogPost.data?.content}</p>
 
@@ -86,7 +86,7 @@ export default function BlogDetailsPage() {
                 })}>Send
                 </button>
                 {createCommentMutation.isError && <div className="errorContainer">Failed to create
-                    comment: {createCommentMutation.error.response?.data ?? createCommentMutation.error.message}</div>}
+                    comment: {createCommentMutation.error.message}</div>}
             </div>
 
             {comments.isPending && <div>Comments are loading...</div>}
