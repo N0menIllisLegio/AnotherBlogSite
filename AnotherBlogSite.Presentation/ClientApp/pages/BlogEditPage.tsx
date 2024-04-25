@@ -36,7 +36,9 @@ export default function BlogEditPage() {
         enabled: !!blogPostId,
     });
 
-    const createMutation = useMutation<IBlogPost, RequestError, CreateBlogPost>({ mutationFn: blogPostsService.createBlogPost, onSuccess: (data) => {
+    const createMutation = useMutation<IBlogPost, RequestError, CreateBlogPost>({
+        mutationFn: blogPostsService.createBlogPost,
+        onSuccess: (data) => {
             queryClient.setQueryData([QueryKey.BlogPosts, blogPostId], data);
             queryClient.setQueryData([QueryKey.BlogPosts], (oldData: IBlogPost[] | undefined) => oldData
                 ? [...oldData, data]
@@ -46,7 +48,9 @@ export default function BlogEditPage() {
         }
     });
 
-    const updateMutation = useMutation<IBlogPost, RequestError, UpdateBlogPost>({ mutationFn: blogPostsService.updateBlogPost, onSuccess: (data) => {
+    const updateMutation = useMutation<IBlogPost, RequestError, UpdateBlogPost>({
+        mutationFn: blogPostsService.updateBlogPost,
+        onSuccess: (data) => {
             queryClient.setQueryData([QueryKey.BlogPosts, blogPostId], data);
             queryClient.setQueryData([QueryKey.BlogPosts],
                 (oldData: IBlogPost[] | undefined) => oldData

@@ -7,7 +7,7 @@ import IRequestProvider from "../models/IRequestProvider.ts";
 import AxiosRequestProvider from "../models/AxiosRequestProvider.ts";
 
 const httpClient = axios.create({
-    baseURL: 'https://localhost:7281',
+    baseURL: import.meta.env.VITE_SERVER_URL,
     transformResponse: (data, _, status) => {
         if (status === 204)
             return null;
