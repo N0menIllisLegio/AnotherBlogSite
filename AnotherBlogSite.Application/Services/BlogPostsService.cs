@@ -12,7 +12,7 @@ internal sealed class BlogPostsService: IBlogPostService
     {
         _blogPostsRepository = blogPostsRepository;
     }
-    
+
     public Task<List<BlogPost>> GetAllAsync()
     {
         return _blogPostsRepository.GetAllAsync();
@@ -30,7 +30,7 @@ internal sealed class BlogPostsService: IBlogPostService
             Title = title,
             AuthorId = authorId,
             Content = content,
-            CreatedDate = DateTimeOffset.Now,
+            CreatedDate = DateTimeOffset.UtcNow,
         };
 
         return _blogPostsRepository.CreateAsync(newBlogPost);

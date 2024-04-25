@@ -20,7 +20,7 @@ internal sealed class CommentsService: ICommentService
             AuthorId = authorId,
             BlogPostId = blogPostId,
             Content = content,
-            CreatedDate = DateTimeOffset.Now,
+            CreatedDate = DateTimeOffset.UtcNow,
         };
 
         return _commentsRepository.CreateAsync(comment);
