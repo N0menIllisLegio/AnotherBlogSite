@@ -2,6 +2,7 @@
 import {useNavigate} from "react-router";
 import "../assets/SignIn.css"
 import useSignIn from "../hooks/useSignIn.ts";
+import Input from "../components/Input.tsx";
 
 export default function SignInPage() {
     const [email, setEmail] = useState("");
@@ -33,10 +34,8 @@ export default function SignInPage() {
 
     return <form className="signInContent" onSubmit={onClickSignIn}>
         <div>
-            <label htmlFor="email">Email:</label>
-            <input type="email" name="email" value={email} onChange={e => setEmail(e.target.value)} />
-            <label htmlFor="password">Password:</label>
-            <input type="password" name="password" value={password} onChange={e => setPassword(e.target.value)} />
+            <Input value={email} onChange={e => setEmail(e.target.value)} type="email" name="email" label="Email:" />
+            <Input value={password} onChange={e => setPassword(e.target.value)} type="password" name="password" label="Password:" />
         </div>
 
         <div className="signInBelowInputs">

@@ -11,6 +11,7 @@ import "../assets/BlogDetailsPage.css";
 import {useBlogPostsService, useCommentsService} from "../hooks/useDependencyInjection.ts";
 import RequestError from "../models/RequestError.ts";
 import {AuthContext, IAuthContext} from "../components/AuthContext.tsx";
+import TextArea from "../components/TextArea.tsx";
 
 export default function BlogDetailsPage() {
     const { blogPostId } = useParams();
@@ -87,8 +88,8 @@ export default function BlogDetailsPage() {
                         content: newCommentContent
                     });
                 }}>
-                    <textarea placeholder="Write your comment..." rows={8} value={newCommentContent}
-                              onChange={(e) => setNewCommentContent(e.target.value)}/>
+                    <TextArea value={newCommentContent} onChange={e => setNewCommentContent(e.target.value)}
+                              cols={100} rows={8} placeholder="Write your comment..." />
                     <br/>
                     <button type="submit" className="actionButton">Send
                     </button>

@@ -9,6 +9,7 @@ import {useCommentsService} from "../hooks/useDependencyInjection.ts";
 import RequestError from "../models/RequestError.ts";
 import IBlogPost from "../models/IBlogPost.ts";
 import {AuthContext, IAuthContext} from "./AuthContext.tsx";
+import TextArea from "./TextArea.tsx";
 
 export default function CommentListComponent(props: { comment: IComment }) {
     const { comment } = props;
@@ -53,8 +54,8 @@ export default function CommentListComponent(props: { comment: IComment }) {
                         content: editingCommentContent,
                     });
                 }}>
-                    <textarea name="Text1" cols={100} rows={8} value={editingCommentContent}
-                              onChange={(e) => setEditingCommentContent(e.target.value)} />
+                    <TextArea value={editingCommentContent} onChange={e => setEditingCommentContent(e.target.value)}
+                              cols={100} rows={8} />
                     <br/>
                     <button
                         type="submit"

@@ -7,6 +7,8 @@ import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/BlogEditPage.css";
 import {useBlogPostsService} from "../hooks/useDependencyInjection.ts";
 import RequestError from "../models/RequestError.ts";
+import Input from "../components/Input.tsx";
+import TextArea from "../components/TextArea.tsx";
 
 export default function BlogEditPage() {
     const { blogPostId } = useParams();
@@ -60,13 +62,12 @@ export default function BlogEditPage() {
     }, [blogPost.data?.id]);
 
     return <form onSubmit={handleEdit} className="blogEditContent">
-        <label htmlFor="title">Blog Title:</label>
-        <input name="title" type="text" value={blogTitle} onChange={(e) => setBlogTitle(e.target.value)}/>
+        <Input value={blogTitle} onChange={e => setBlogTitle(e.target.value)} type="text" name="title" label="Blog Title:" />
         <small>Title should be at least 10 characters long. Current length: {blogTitle.length}</small>
+
         <br/>
-        <label htmlFor="content">Blog Content:</label>
-        <textarea name="content" cols={100} rows={30} value={blogContent}
-                  onChange={(e) => setBlogContent(e.target.value)}/>
+        <TextArea value={blogContent} onChange={e => setBlogContent(e.target.value)}
+                  cols={100} rows={30} name="content" label="Blog Content:" />
         <small>Content should be at least 500 characters long. Current length: {blogContent.length}</small>
 
         <div>
