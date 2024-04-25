@@ -1,12 +1,12 @@
 ﻿using AnotherBlogSite.Application.Common;
 using AnotherBlogSite.Application.Models;
 using AnotherBlogSite.Application.Repositories;
-using AnotherBlogSite.Infrastructure.Mapper;
+using AnotherBlogSite.Data.Mapper;
 using Microsoft.EntityFrameworkCore;
 
-using DomainComment = AnotherBlogSite.Domain.Entities.Comment;
+using DomainComment = AnotherBlogSite.Application.Entities.Comment;
 
-namespace AnotherBlogSite.Infrastructure.Repositories;
+namespace AnotherBlogSite.Data.Repositories;
 
 internal sealed class CommentsRepository: ICommentsRepository
 {

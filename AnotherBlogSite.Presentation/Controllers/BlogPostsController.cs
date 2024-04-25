@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Security.Claims;
+using AnotherBlogSite.Application.Entities;
 using AnotherBlogSite.Application.Services;
-using AnotherBlogSite.Domain.Entities;
 using AnotherBlogSite.Presentation.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +28,7 @@ public sealed class BlogPostsController: BaseController
     public async Task<IActionResult> Create([FromBody] BlogPostCreateRequest request)
     {
         string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
+
         if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out Guid userId))
             return Forbid();
 

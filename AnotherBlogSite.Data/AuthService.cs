@@ -4,16 +4,17 @@ using System.Text;
 using AnotherBlogSite.Application.Models;
 using AnotherBlogSite.Application.Options;
 using AnotherBlogSite.Application.Services;
-using AnotherBlogSite.Infrastructure.Mapper;
+using AnotherBlogSite.Data.Entities;
+using AnotherBlogSite.Data.Mapper;
 using AnotherBlogSite.Presentation.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-using InfrastructureUser = AnotherBlogSite.Infrastructure.Entities.User;
-using DomainUser = AnotherBlogSite.Domain.Entities.User;
+using InfrastructureUser = AnotherBlogSite.Data.Entities.User;
+using DomainUser = AnotherBlogSite.Application.Entities.User;
 
-namespace AnotherBlogSite.Infrastructure;
+namespace AnotherBlogSite.Data;
 
 internal sealed class AuthService: IAuthService
 {
@@ -22,10 +23,10 @@ internal sealed class AuthService: IAuthService
     private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new();
     private readonly UserMapper _mapper = new();
 
-    private readonly UserManager<InfrastructureUser> _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly JwtOptions _jwtOptions;
 
-    public AuthService(UserManager<InfrastructureUser> userManager, IOptions<JwtOptions> options)
+    public AuthService(UserManager<User> userManager, IOptions<JwtOptions> options)
     {
         _userManager = userManager;
         _jwtOptions = options.Value;
@@ -63,7 +64,7 @@ internal sealed class AuthService: IAuthService
         return Result<SignInModel>.CreateSuccess(new() { AccessToken = token });
     }
 
-    private string GenerateToken(InfrastructureUser user)
+    private string GenerateToken(User user)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

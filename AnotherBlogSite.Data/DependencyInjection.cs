@@ -1,12 +1,12 @@
 ﻿using AnotherBlogSite.Application.Repositories;
 using AnotherBlogSite.Application.Services;
-using AnotherBlogSite.Infrastructure.Entities;
-using AnotherBlogSite.Infrastructure.Repositories;
+using AnotherBlogSite.Data.Entities;
+using AnotherBlogSite.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AnotherBlogSite.Infrastructure;
+namespace AnotherBlogSite.Data;
 
 public static class DependencyInjection
 {

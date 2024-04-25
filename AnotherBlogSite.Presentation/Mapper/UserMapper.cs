@@ -1,4 +1,4 @@
-﻿using AnotherBlogSite.Domain.Entities;
+﻿using AnotherBlogSite.Application.Entities;
 using AnotherBlogSite.Presentation.Models;
 using Riok.Mapperly.Abstractions;
 

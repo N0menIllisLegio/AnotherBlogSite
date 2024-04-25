@@ -1,5 +1,5 @@
 using AnotherBlogSite.Application;
-using AnotherBlogSite.Infrastructure;
+using AnotherBlogSite.Data;
 using AnotherBlogSite.Presentation;
 
 var builder = WebApplication.CreateBuilder(args);

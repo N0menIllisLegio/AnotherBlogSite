@@ -1,8 +1,8 @@
-﻿using AnotherBlogSite.Infrastructure.Entities;
+﻿using AnotherBlogSite.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AnotherBlogSite.Infrastructure;
+namespace AnotherBlogSite.Data;
 
 internal sealed class BlogSiteContext: IdentityUserContext<User, Guid>
 {

@@ -1,5 +1,5 @@
-﻿using AnotherBlogSite.Application.Models;
-using AnotherBlogSite.Domain.Entities;
+﻿using AnotherBlogSite.Application.Entities;
+using AnotherBlogSite.Application.Models;
 using AnotherBlogSite.Presentation.Models;
 
 namespace AnotherBlogSite.Application.Services;

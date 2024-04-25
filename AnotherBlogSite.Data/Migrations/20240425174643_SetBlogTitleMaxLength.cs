@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace AnotherBlogSite.Infrastructure.Migrations
+namespace AnotherBlogSite.Data.Migrations
 {
     /// <inheritdoc />
     public partial class SetBlogTitleMaxLength : Migration

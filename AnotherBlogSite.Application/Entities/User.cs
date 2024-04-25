@@ -1,4 +1,4 @@
-﻿namespace AnotherBlogSite.Domain.Entities;
+﻿namespace AnotherBlogSite.Application.Entities;
 
 public sealed class User
 {

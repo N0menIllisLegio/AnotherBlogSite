@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Security.Claims;
+using AnotherBlogSite.Application.Entities;
 using AnotherBlogSite.Application.Services;
-using AnotherBlogSite.Domain.Entities;
 using AnotherBlogSite.Presentation.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;

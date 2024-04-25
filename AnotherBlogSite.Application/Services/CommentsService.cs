@@ -1,6 +1,6 @@
-﻿using AnotherBlogSite.Application.Models;
+﻿using AnotherBlogSite.Application.Entities;
+using AnotherBlogSite.Application.Models;
 using AnotherBlogSite.Application.Repositories;
-using AnotherBlogSite.Domain.Entities;
 
 namespace AnotherBlogSite.Application.Services;
 

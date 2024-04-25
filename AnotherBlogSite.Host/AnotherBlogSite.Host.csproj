@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AnotherBlogSite.Infrastructure\AnotherBlogSite.Infrastructure.csproj" />
+      <ProjectReference Include="..\AnotherBlogSite.Data\AnotherBlogSite.Data.csproj" />
       <ProjectReference Include="..\AnotherBlogSite.Presentation\AnotherBlogSite.Presentation.csproj" />
     </ItemGroup>
 
