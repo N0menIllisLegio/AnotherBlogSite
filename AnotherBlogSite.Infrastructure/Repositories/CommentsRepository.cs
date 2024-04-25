@@ -18,24 +18,17 @@ internal sealed class CommentsRepository: ICommentsRepository
         _context = context;
     }
 
-    public Task<List<DomainComment>> GetAllBlogPostCommentsAsync(Guid blogPostId)
-    {
-        return _mapper
-            .ProjectToDomain(_context.Comments.Where(x => x.BlogPostId == blogPostId).AsNoTracking())
-            .ToListAsync();
-    }
-
     public async Task<Result<DomainComment>> CreateAsync(DomainComment newComment)
     {
         var comment = _mapper.MapToInfrastructure(newComment);
 
         _context.Comments.Add(comment);
-        
+
         int createdCount = await _context.SaveChangesAsync();
-        
+
         if (createdCount != 1)
             return Result<DomainComment>.CreateFailure("Failed to create Comment!");
-        
+
         await _context.Entry(comment).Reference(x => x.Author).LoadAsync();
 
         return Result<DomainComment>.CreateSuccess(_mapper.MapToDomain(comment));
@@ -49,7 +42,7 @@ internal sealed class CommentsRepository: ICommentsRepository
 
         if (originalComment is null)
             return Result<DomainComment>.CreateFailure("Comment not found!", ErrorType.NotFound);
-        
+
         _mapper.Map(updatedComment, originalComment);
 
         await _context.SaveChangesAsync();

@@ -8,14 +8,13 @@ namespace AnotherBlogSite.Infrastructure.Mapper;
 [Mapper]
 internal sealed partial class CommentMapper
 {
-    public partial IQueryable<DomainComment> ProjectToDomain(IQueryable<InfrastructureComment> comments);
     public partial DomainComment MapToDomain(InfrastructureComment comments);
-    
+
     [MapperIgnoreTarget(nameof(InfrastructureComment.Author))]
     [MapperIgnoreSource(nameof(DomainComment.Author))]
     [MapperIgnoreTarget(nameof(InfrastructureComment.BlogPost))]
     public partial InfrastructureComment MapToInfrastructure(DomainComment comment);
-    
+
     [MapperIgnoreSource(nameof(DomainComment.Id))]
     [MapperIgnoreTarget(nameof(InfrastructureComment.Id))]
     [MapperIgnoreSource(nameof(DomainComment.CreatedDate))]

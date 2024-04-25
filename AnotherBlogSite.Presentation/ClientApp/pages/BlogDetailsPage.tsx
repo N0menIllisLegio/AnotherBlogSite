@@ -26,16 +26,10 @@ export default function BlogDetailsPage() {
     const deleteBlogMutation = useMutation<void, RequestError, Guid>({ mutationFn: blogPostsService.deleteBlogPost,
         onSuccess: () => {
             queryClient.setQueryData([QueryKey.BlogPosts],
-                (oldPosts: IBlogPost[]) => oldPosts.filter(oldPost => oldPost.id !== blogPostId));
+                (oldPosts: IBlogPost[] | undefined) => oldPosts?.filter(oldPost => oldPost.id !== blogPostId));
 
             navigate("/blogPosts");
         }
-    });
-
-    const comments = useQuery({
-        queryKey: [QueryKey.Comments, blogPostId],
-        queryFn: () => commentsService.getBlogPostComments(blogPostId!),
-        enabled: !!blogPost.data?.id
     });
 
     const queryClient = useQueryClient();
@@ -43,14 +37,18 @@ export default function BlogDetailsPage() {
     const createCommentMutation = useMutation<IComment, RequestError, CreateComment>({
         mutationFn: commentsService.createComment, onSuccess: (data) => {
             setNewCommentContent("");
-            queryClient.setQueryData([QueryKey.Comments, blogPostId],
-                (oldComments: IComment[]) => [...oldComments, data]);
+            queryClient.setQueryData([QueryKey.BlogPosts, blogPostId],
+                (oldBlogPost: IBlogPost | undefined) => oldBlogPost
+                    ? ({ ...oldBlogPost, comments: [...oldBlogPost.comments ?? [], data] })
+                    : undefined);
         }
     });
 
     if (blogPost.isPending) return <div>Loading...</div>
 
     if (blogPost.isError) return <div className="errorContainer">Error: {blogPost.error.message}</div>
+
+    const comments = blogPost.data.comments;
 
     return <div className="blogDetailsContent">
         <h1 style={{marginTop: "0px"}}>{blogPost.data?.title}</h1>
@@ -93,13 +91,9 @@ export default function BlogDetailsPage() {
                     comment: {createCommentMutation.error.message}</div>}
             </form>
 
-            {comments.isPending && <div>Comments are loading...</div>}
-            {comments.isError &&
-                <div className="errorContainer">Failed to load comments: {comments.error.message}</div>}
-            {comments.isSuccess && comments.data?.length == 0 &&
-                <div style={{marginTop: "1rem"}}><i>No comments...</i></div>}
+            {comments?.length == 0 && <div style={{marginTop: "1rem"}}><i>No comments...</i></div>}
 
-            {comments.data?.sort((comment1, comment2) => comment2.createdDate.getTime() - comment1.createdDate.getTime()).map(comment =>
+            {comments?.sort((comment1, comment2) => comment2.createdDate.getTime() - comment1.createdDate.getTime()).map(comment =>
                 <CommentListComponent key={comment.id} comment={comment}/>)}
         </div>
     </div>

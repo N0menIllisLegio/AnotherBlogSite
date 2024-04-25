@@ -9,6 +9,7 @@ import BlogsPage from "./pages/BlogsPage.tsx";
 import BlogDetailsPage from "./pages/BlogDetailsPage.tsx";
 import AuthContextProvider from "./components/AuthContext.tsx";
 import BlogEditPage from "./pages/BlogEditPage.tsx";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const router = createBrowserRouter([
     {
@@ -43,13 +44,20 @@ const router = createBrowserRouter([
     },
 ]);
 
-const queryClient = new QueryClient({});
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 2 * 60 * 1000
+        }
+    }
+});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
             <AuthContextProvider>
                 <RouterProvider router={router} />
+                <ReactQueryDevtools initialIsOpen={true} />
             </AuthContextProvider>
         </QueryClientProvider>
     </React.StrictMode>,

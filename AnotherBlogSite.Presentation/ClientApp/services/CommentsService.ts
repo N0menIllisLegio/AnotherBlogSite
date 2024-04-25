@@ -19,14 +19,6 @@ export default class CommentsService {
         this.#requestProvider = requestProvider;
     }
 
-    getBlogPostComments = async (blogPostId: Guid): Promise<IComment[]> => {
-        const data = await this.#requestProvider.get<IComment[]>(`/Comments/${blogPostId}`);
-
-        data.forEach(comment => comment.createdDate = new Date(comment.createdDate));
-
-        return data;
-    }
-
     createComment = async (createComment: CreateComment): Promise<IComment> => {
         const data = await this.#requestProvider.post<CreateComment, IComment>('/Comments', createComment);
 

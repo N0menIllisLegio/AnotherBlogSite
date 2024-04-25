@@ -23,7 +23,9 @@ export default function BlogEditPage() {
 
     const createMutation = useMutation<IBlogPost, RequestError, CreateBlogPost>({ mutationFn: blogPostsService.createBlogPost, onSuccess: (data) => {
             queryClient.setQueryData([QueryKey.BlogPosts, blogPostId], data);
-            queryClient.setQueryData([QueryKey.BlogPosts], (oldData: IBlogPost[]) => [...oldData, data]);
+            queryClient.setQueryData([QueryKey.BlogPosts], (oldData: IBlogPost[] | undefined) => oldData
+                ? [...oldData, data]
+                : undefined);
 
             navigate(`/blogPosts/${data.id}`, { replace: true });
         }
@@ -32,7 +34,9 @@ export default function BlogEditPage() {
     const updateMutation = useMutation<IBlogPost, RequestError, UpdateBlogPost>({ mutationFn: blogPostsService.updateBlogPost, onSuccess: (data) => {
             queryClient.setQueryData([QueryKey.BlogPosts, blogPostId], data);
             queryClient.setQueryData([QueryKey.BlogPosts],
-                (oldData: IBlogPost[]) => [...oldData.filter(x => x.id !== blogPostId), data]);
+                (oldData: IBlogPost[] | undefined) => oldData
+                    ? [...oldData.filter(x => x.id !== blogPostId), data]
+                    : undefined);
 
             navigate(-1);
         }

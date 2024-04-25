@@ -29,7 +29,7 @@ public sealed class CommentsController: BaseController
     public async Task<IActionResult> Create([FromBody] CommentCreateRequest request)
     {
         string? userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
+
         if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out Guid userId))
             return Forbid();
 
@@ -57,16 +57,5 @@ public sealed class CommentsController: BaseController
         await _commentService.DeleteAsync(commentId);
 
         return NoContent();
-    }
-
-    [AllowAnonymous]
-    [HttpGet("{blogPostId}")]
-    [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType<List<Comment>>((int)HttpStatusCode.OK)]
-    public async Task<IActionResult> Get([FromRoute] Guid blogPostId)
-    {
-        var result = await _commentService.GetAllBlogPostCommentsAsync(blogPostId);
-
-        return Ok(result);
     }
 }

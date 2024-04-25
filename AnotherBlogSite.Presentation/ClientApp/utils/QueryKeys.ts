@@ -1,5 +1,4 @@
 ﻿const QueryKey = {
-    Comments: "Comments",
     BlogPosts: "BlogPosts",
 };
 

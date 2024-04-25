@@ -7,6 +7,7 @@ import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/CommentListComponent.css";
 import {useCommentsService} from "../hooks/useDependencyInjection.ts";
 import RequestError from "../models/RequestError.ts";
+import IBlogPost from "../models/IBlogPost.ts";
 
 export default function CommentListComponent(props: { comment: IComment }) {
     const { comment } = props;
@@ -17,16 +18,20 @@ export default function CommentListComponent(props: { comment: IComment }) {
 
     const deleteCommentMutation = useMutation<void, RequestError, Guid>({ mutationFn: commentsService.deleteComment,
         onSuccess: () => {
-            queryClient.setQueryData([QueryKey.Comments, comment.blogPostId],
-                (comments: IComment[]) => comments.filter(oldPost => oldPost.id !== comment.id));
+            queryClient.setQueryData([QueryKey.BlogPosts, comment.blogPostId],
+                (oldBlogPost: IBlogPost | undefined) => oldBlogPost
+                    ? ({ ...oldBlogPost, comments: oldBlogPost.comments?.filter(x => x.id !== comment.id) })
+                    : undefined);
         }
     });
 
     const updateCommentMutation = useMutation<IComment, RequestError, UpdateComment>({
         mutationFn: commentsService.updateComment,
         onSuccess: (data) => {
-            queryClient.setQueryData([QueryKey.Comments, comment.blogPostId],
-                (comments: IComment[]) => [...comments.filter(oldPost => oldPost.id !== comment.id), data]);
+            queryClient.setQueryData([QueryKey.BlogPosts, comment.blogPostId],
+                (oldBlogPost: IBlogPost | undefined) => oldBlogPost
+                    ? ({ ...oldBlogPost, comments: [...oldBlogPost.comments?.filter(oldPost => oldPost.id !== comment.id) ?? [], data] })
+                    : undefined);
 
             setIsEditing(false);
         }

@@ -11,7 +11,7 @@ namespace AnotherBlogSite.Infrastructure.Repositories;
 internal sealed class BlogPostsRepository: IBlogPostsRepository
 {
     private readonly BlogPostMapper _mapper = new();
-    
+
     private readonly BlogSiteContext _context;
 
     public BlogPostsRepository(BlogSiteContext context)
@@ -28,6 +28,8 @@ internal sealed class BlogPostsRepository: IBlogPostsRepository
     {
         var blogPost = await _context.BlogPosts
             .Include(x => x.Author)
+            .Include(x => x.Comments)
+                .ThenInclude(x => x.Author)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == blogPostId);
 
@@ -42,9 +44,9 @@ internal sealed class BlogPostsRepository: IBlogPostsRepository
         var blogPost = _mapper.MapToInfrastructure(newBlogPost);
 
         _context.BlogPosts.Add(blogPost);
-        
+
         int createdCount = await _context.SaveChangesAsync();
-        
+
         if (createdCount != 1)
             return Result<DomainBlogPost>.CreateFailure("Failed to create Blog Post!");
 
@@ -58,17 +60,18 @@ internal sealed class BlogPostsRepository: IBlogPostsRepository
     {
         var originalBlogPost = await _context.BlogPosts
             .Include(x => x.Author)
+            .Include(x => x.Comments)
             .FirstOrDefaultAsync(x => x.Id == updatedBlogPost.Id);
 
         if (originalBlogPost is null)
             return Result<DomainBlogPost>.CreateFailure("Blog Post not found!", ErrorType.NotFound);
-        
+
         _mapper.Map(updatedBlogPost, originalBlogPost);
 
         await _context.SaveChangesAsync();
-        
+
         return Result<DomainBlogPost>.CreateSuccess(
-            _mapper.MapToDomainWithoutComments(originalBlogPost));
+            _mapper.MapToDomainWithComments(originalBlogPost));
     }
 
     public Task DeleteAsync(Guid blogPostId)

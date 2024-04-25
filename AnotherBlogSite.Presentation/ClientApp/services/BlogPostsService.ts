@@ -32,6 +32,7 @@ export default class BlogPostsService {
         const data = await this.#requestProvider.get<IBlogPost>(`/BlogPosts/${blogPostId}`);
 
         data.createdDate = new Date(data.createdDate);
+        data.comments?.forEach(comment => comment.createdDate = new Date(comment.createdDate));
 
         return data;
     }
@@ -40,6 +41,7 @@ export default class BlogPostsService {
         const data = await this.#requestProvider.post<CreateBlogPost, IBlogPost>('/BlogPosts', createBlogPost);
 
         data.createdDate = new Date(data.createdDate);
+        data.comments?.forEach(comment => comment.createdDate = new Date(comment.createdDate));
 
         return data;
     }
@@ -48,6 +50,7 @@ export default class BlogPostsService {
         const data = await this.#requestProvider.put<UpdateBlogPost, IBlogPost>('/BlogPosts', updateBlogPost);
 
         data.createdDate = new Date(data.createdDate);
+        data.comments?.forEach(comment => comment.createdDate = new Date(comment.createdDate));
 
         return data;
     }

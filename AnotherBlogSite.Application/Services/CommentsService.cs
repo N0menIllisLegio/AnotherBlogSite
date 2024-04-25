@@ -13,11 +13,6 @@ internal sealed class CommentsService: ICommentService
         _commentsRepository = commentsRepository;
     }
 
-    public Task<List<Comment>> GetAllBlogPostCommentsAsync(Guid blogPostId)
-    {
-        return _commentsRepository.GetAllBlogPostCommentsAsync(blogPostId);
-    }
-
     public Task<Result<Comment>> CreateAsync(Guid authorId, Guid blogPostId, string content)
     {
         var comment = new Comment()
