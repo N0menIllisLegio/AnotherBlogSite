@@ -1,47 +1,61 @@
-﻿import {FormEvent, useState} from "react";
-import {useNavigate} from "react-router";
+﻿import {useNavigate} from "react-router";
 import "../assets/SignIn.css"
-import useSignIn from "../hooks/useSignIn.ts";
+import useSignIn, {ISignInCredentials} from "../hooks/useSignIn.ts";
 import Input from "../components/Input.tsx";
+import ErrorElement from "../components/Error.tsx";
+import { useForm, SubmitHandler } from 'react-hook-form';
 
 export default function SignInPage() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [signInExecuting, setSignInExecuting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
     const signIn = useSignIn();
 
-    const onClickSignIn = async (e: FormEvent) => {
-        e.preventDefault();
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors, isSubmitting },
+    } = useForm<ISignInCredentials>();
 
-        setError(null);
-        setSignInExecuting(true);
-
+    const onClickSignIn: SubmitHandler<ISignInCredentials> = async (data) => {
         try {
-            await signIn(email, password);
+            await signIn(data);
             navigate("/");
         } catch (err) {
             if (err instanceof Error) {
-                setError(err.message)
+                setError("root", { message: err.message, type: "value" });
             } else {
-                setError(String(err));
+                setError("root", { message: "Something went wrong. Try again later.", type: "value" });
             }
-        } finally {
-            setSignInExecuting(false);
         }
     }
 
-    return <form className="signInContent" onSubmit={onClickSignIn}>
+    return <form className="signInContent" onSubmit={handleSubmit(onClickSignIn)}>
         <div>
-            <Input value={email} onChange={e => setEmail(e.target.value)} type="email" name="email" label="Email:" />
-            <Input value={password} onChange={e => setPassword(e.target.value)} type="password" name="password" label="Password:" />
+            <Input type="email" label="Email:" error={errors.email?.message?.toString()}
+                {...register("email", {
+                    required: {
+                        value: true,
+                        message: "Please enter email address",
+                    },
+                    pattern: {
+                        value: /\S+@\S+\.\S+/,
+                        message: "Entered value does not match email format",
+                    },
+                })} />
+            <Input type="password" label="Password:" error={errors.password?.message?.toString()}
+                {...register("password", {
+                    required: "Please enter password",
+                    minLength: {
+                        value: 8,
+                        message: "Min password length is 8",
+                    },
+                })} />
         </div>
 
         <div className="signInBelowInputs">
-            { !signInExecuting && <button type="submit" className="actionButton">Sign In</button> }
-            { signInExecuting && <div>Signing in...</div> }
-            { error && <div className="errorContainer">{error}</div> }
+            { !isSubmitting && <button type="submit" className="actionButton">Sign In</button> }
+            { isSubmitting && <div>Signing in...</div> }
+            { errors.root?.message && <ErrorElement error={errors.root?.message} /> }
         </div>
     </form>
 }

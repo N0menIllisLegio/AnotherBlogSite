@@ -6,15 +6,17 @@ interface ISignIn {
     accessToken: string;
 }
 
-const useSignIn = (): (email: string, password: string) => Promise<void> => {
+export interface ISignInCredentials {
+    email: string;
+    password: string;
+}
+
+const useSignIn = (): (credentials: ISignInCredentials) => Promise<void> => {
     const requestProvider = useAxiosRequestProvider();
     const { updateAccessToken } = useContext(AuthContext) as IAuthContext;
 
-    const signIn = async (email: string, password: string) => {
-        const data = await requestProvider.post<{email: string, password: string}, ISignIn>("Auth/SignIn", {
-            email,
-            password,
-        });
+    const signIn = async (creds: ISignInCredentials) => {
+        const data = await requestProvider.post<ISignInCredentials, ISignIn>("Auth/SignIn", creds);
 
         updateAccessToken(data.accessToken);
     };

@@ -10,14 +10,36 @@ import RequestError from "../models/RequestError.ts";
 import IBlogPost from "../models/IBlogPost.ts";
 import {AuthContext, IAuthContext} from "./AuthContext.tsx";
 import TextArea from "./TextArea.tsx";
+import Error from "./Error.tsx";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+interface ICommentForm {
+    content: string;
+}
 
 export default function CommentListComponent(props: { comment: IComment }) {
     const { comment } = props;
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<ICommentForm>({ defaultValues: {
+        content: comment.content
+    }});
+
     const queryClient = useQueryClient();
     const [isEditing, setIsEditing] = useState(false);
-    const [editingCommentContent, setEditingCommentContent] = useState(comment.content);
     const commentsService = useCommentsService();
     const { accessToken } = useContext(AuthContext) as IAuthContext;
+
+    const onEdit: SubmitHandler<ICommentForm> = async (data) => {
+        updateCommentMutation.mutate({
+            commentId: comment.id,
+            content: data.content,
+        });
+    }
 
     const deleteCommentMutation = useMutation<void, RequestError, Guid>({ mutationFn: commentsService.deleteComment,
         onSuccess: () => {
@@ -46,16 +68,9 @@ export default function CommentListComponent(props: { comment: IComment }) {
         { !isEditing && <p className="comment">{comment.content}</p> }
         {
             isEditing && (
-                <form onSubmit={(e) => {
-                    e.preventDefault();
-
-                    updateCommentMutation.mutate({
-                        commentId: comment.id,
-                        content: editingCommentContent,
-                    });
-                }}>
-                    <TextArea value={editingCommentContent} onChange={e => setEditingCommentContent(e.target.value)}
-                              cols={100} rows={8} />
+                <form onSubmit={handleSubmit(onEdit)}>
+                    <TextArea cols={100} rows={8} error={errors.content?.message}
+                              {...register("content", { required: "Please enter comment's content" })} />
                     <br/>
                     <button
                         type="submit"
@@ -67,7 +82,7 @@ export default function CommentListComponent(props: { comment: IComment }) {
                         className="actionButton deleteButton"
                         onClick={() => {
                             setIsEditing(false);
-                            setEditingCommentContent(comment.content);
+                            reset({ content: comment.content });
                         }}>Cancel
                     </button>
                 </form>
@@ -76,9 +91,9 @@ export default function CommentListComponent(props: { comment: IComment }) {
 
         { accessToken && !isEditing && <button style={{ marginRight: "8px" }}
             className="actionButton" onClick={() => setIsEditing(true)}>Edit</button> }
-        { isEditing && updateCommentMutation.isError && <div className="errorContainer">{ updateCommentMutation.error.message }</div> }
+        { isEditing && updateCommentMutation.isError && <Error error={ updateCommentMutation.error.message } /> }
         {  accessToken && !isEditing && <button
             className="actionButton deleteButton" onClick={() => deleteCommentMutation.mutate(comment.id)}>Delete</button> }
-        { !isEditing && deleteCommentMutation.isError && <div className="errorContainer">{ deleteCommentMutation.error.message }</div> }
+        { !isEditing && deleteCommentMutation.isError && <Error error={ deleteCommentMutation.error.message } /> }
     </div>
 }

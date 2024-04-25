@@ -58,8 +58,6 @@ export default class AxiosRequestProvider implements IRequestProvider {
             console.error(err);
         }
 
-        console.log("Throwing error");
-
         throw new RequestError(errorMessage);
     }
 }

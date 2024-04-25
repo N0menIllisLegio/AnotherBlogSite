@@ -2,7 +2,7 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {CreateComment} from "../services/CommentsService.ts";
 import CommentListComponent from "../components/CommentListComponent.tsx";
-import {useContext, useState} from "react";
+import {useContext} from "react";
 import IBlogPost from "../models/IBlogPost.ts";
 import Guid from "../models/Guid.ts";
 import IComment from "../models/IComment.ts";
@@ -12,10 +12,22 @@ import {useBlogPostsService, useCommentsService} from "../hooks/useDependencyInj
 import RequestError from "../models/RequestError.ts";
 import {AuthContext, IAuthContext} from "../components/AuthContext.tsx";
 import TextArea from "../components/TextArea.tsx";
+import Error from "../components/Error.tsx";
+import {SubmitHandler, useForm } from "react-hook-form";
+
+interface ICommentForm {
+    content: string;
+}
 
 export default function BlogDetailsPage() {
     const { blogPostId } = useParams();
-    const [newCommentContent, setNewCommentContent] = useState("");
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<ICommentForm>();
+
     const navigate = useNavigate();
     const blogPostsService = useBlogPostsService();
     const commentsService = useCommentsService();
@@ -39,7 +51,7 @@ export default function BlogDetailsPage() {
 
     const createCommentMutation = useMutation<IComment, RequestError, CreateComment>({
         mutationFn: commentsService.createComment, onSuccess: (data) => {
-            setNewCommentContent("");
+            reset({ content: "" })
             queryClient.setQueryData([QueryKey.BlogPosts, blogPostId],
                 (oldBlogPost: IBlogPost | undefined) => oldBlogPost
                     ? ({ ...oldBlogPost, comments: [...oldBlogPost.comments ?? [], data] })
@@ -47,9 +59,17 @@ export default function BlogDetailsPage() {
         }
     });
 
+    const onSendComment: SubmitHandler<ICommentForm> = async (data) => {
+        if (blogPost.data?.id)
+            createCommentMutation.mutate({
+                blogPostId: blogPost.data.id,
+                content: data.content
+            });
+    }
+
     if (blogPost.isPending) return <div>Loading...</div>
 
-    if (blogPost.isError) return <div className="errorContainer">Error: {blogPost.error.message}</div>
+    if (blogPost.isError) return <Error error={blogPost.error.message} />;
 
     const comments = blogPost.data.comments;
 
@@ -62,8 +82,7 @@ export default function BlogDetailsPage() {
             <span>{blogPost.data?.createdDate.toLocaleString()}</span>
         </div>
 
-        {deleteBlogMutation.isError && <div className="errorContainer">Failed to delete a
-            blog: {deleteBlogMutation.error.message}</div>}
+        {deleteBlogMutation.isError && <Error error={`Failed to delete a blog: ${deleteBlogMutation.error.message}`} />}
 
         <p>{blogPost.data?.content}</p>
 
@@ -80,21 +99,13 @@ export default function BlogDetailsPage() {
 
         <div>
             { accessToken &&
-                <form style={{ marginTop: "2rem", marginBottom: "2rem" }} onSubmit={(e) => {
-                    e.preventDefault();
-
-                    createCommentMutation.mutate({
-                        blogPostId: blogPost.data.id,
-                        content: newCommentContent
-                    });
-                }}>
-                    <TextArea value={newCommentContent} onChange={e => setNewCommentContent(e.target.value)}
-                              cols={100} rows={8} placeholder="Write your comment..." />
+                <form style={{ marginTop: "2rem", marginBottom: "2rem" }} onSubmit={handleSubmit(onSendComment)}>
+                    <TextArea cols={100} rows={8} placeholder="Write your comment..." error={errors.content?.message}
+                              {...register("content", { required: "Please enter comment's content" })}/>
                     <br/>
-                    <button type="submit" className="actionButton">Send
-                    </button>
-                    {createCommentMutation.isError && <div className="errorContainer">Failed to create
-                        comment: {createCommentMutation.error.message}</div>}
+                    <button type="submit" className="actionButton">Send</button>
+                    {createCommentMutation.isError
+                        && <Error error={`Failed to create comment: ${createCommentMutation.error.message}`} />}
                 </form>
             }
 

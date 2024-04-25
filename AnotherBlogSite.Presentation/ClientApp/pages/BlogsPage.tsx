@@ -6,6 +6,7 @@ import {useNavigate} from "react-router";
 import {useBlogPostsService} from "../hooks/useDependencyInjection.ts";
 import {useContext} from "react";
 import {AuthContext, IAuthContext} from "../components/AuthContext.tsx";
+import Error from "../components/Error.tsx";
 
 export default function BlogsPage() {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function BlogsPage() {
     const { accessToken } = useContext(AuthContext) as IAuthContext;
 
     if (blogPosts.isPending) return <div>Loading...</div>
-    if (blogPosts.isError) return <div className="errorContainer">Error: {blogPosts.error.message}</div>
+    if (blogPosts.isError) return <Error error={blogPosts.error.message} />
 
     return <div className="blogsPages">
         { blogPosts.isSuccess && blogPosts.data?.length == 0 && <div>No Blog posts</div> }

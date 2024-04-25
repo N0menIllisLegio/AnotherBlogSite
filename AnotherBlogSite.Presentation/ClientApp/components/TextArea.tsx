@@ -1,19 +1,18 @@
-﻿import {ChangeEventHandler} from "react";
+﻿import {forwardRef, TextareaHTMLAttributes} from "react";
+import Error from "./Error.tsx";
 
-interface ITextArea {
-    value: string
-    onChange: ChangeEventHandler<HTMLTextAreaElement>;
-    cols: number;
-    rows: number;
-    name?: string;
+interface ITextArea extends TextareaHTMLAttributes<HTMLTextAreaElement>{
     label?: string;
-    placeholder?: string;
+    error?: string;
 }
 
-export default function TextArea(props: ITextArea) {
+const TextArea = forwardRef<HTMLTextAreaElement, ITextArea>((props, ref) => {
     return <>
         {props.label && <label htmlFor={props.name}>{props.label}</label>}
-        <textarea value={props.value} onChange={props.onChange} cols={props.cols} rows={props.rows}
+        <textarea ref={ref} value={props.value} onChange={props.onChange} cols={props.cols} rows={props.rows}
                   name={props.name} placeholder={props.placeholder} />
+        <Error error={props.error} />
     </>
-}
+});
+
+export default TextArea;

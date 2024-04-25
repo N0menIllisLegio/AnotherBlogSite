@@ -1,16 +1,17 @@
-﻿import { HTMLInputTypeAttribute, ChangeEventHandler } from "react";
+﻿import {forwardRef, InputHTMLAttributes} from "react";
+import Error from "./Error.tsx";
 
-interface IInput {
-    value: string
-    onChange: ChangeEventHandler<HTMLInputElement>;
-    type: HTMLInputTypeAttribute;
-    name?: string;
+interface IInput extends InputHTMLAttributes<HTMLInputElement>{
     label?: string;
+    error?: string;
 }
 
-export default function Input(props: IInput) {
+const Input = forwardRef<HTMLInputElement, IInput>((props, ref) => {
     return <>
         {props.label && <label htmlFor={props.name}>{props.label}</label>}
-        <input type={props.type} name={props.name} value={props.value} onChange={props.onChange} />
+        <input ref={ref} {...props} />
+        <Error error={props.error} />
     </>
-}
+});
+
+export default Input;

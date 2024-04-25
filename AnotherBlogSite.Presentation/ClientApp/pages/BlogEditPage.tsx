@@ -1,5 +1,5 @@
 ﻿import {useNavigate, useParams} from "react-router";
-import {FormEvent, useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {CreateBlogPost, UpdateBlogPost} from "../services/BlogPostsService.ts";
 import IBlogPost from "../models/IBlogPost.ts";
@@ -9,13 +9,26 @@ import {useBlogPostsService} from "../hooks/useDependencyInjection.ts";
 import RequestError from "../models/RequestError.ts";
 import Input from "../components/Input.tsx";
 import TextArea from "../components/TextArea.tsx";
+import Error from "../components/Error.tsx";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+interface IBlogPostForm {
+    title: string;
+    content: string;
+}
 
 export default function BlogEditPage() {
     const { blogPostId } = useParams();
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm<IBlogPostForm>();
+
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const [blogTitle, setBlogTitle] = useState("");
-    const [blogContent, setBlogContent] = useState("");
     const blogPostsService = useBlogPostsService();
     const blogPost = useQuery({
         queryKey: [QueryKey.BlogPosts, blogPostId],
@@ -44,36 +57,49 @@ export default function BlogEditPage() {
         }
     });
 
-    const handleEdit = (e: FormEvent) => {
-        e.preventDefault();
-
+    const onEdit: SubmitHandler<IBlogPostForm> = async (data) => {
         if (!!blogPostId) {
-            updateMutation.mutate({ blogPostId, title: blogTitle, content: blogContent });
+            updateMutation.mutate({ blogPostId, title: data.title, content: data.content });
         } else {
-            createMutation.mutate({ title: blogTitle, content: blogContent });
+            createMutation.mutate({ title: data.title, content: data.content });
         }
     }
 
     useEffect(() => {
         if (!blogPost.isPending && !blogPost.isError) {
-            setBlogTitle(blogPost.data.title);
-            setBlogContent(blogPost.data.content);
+            reset({
+                title: blogPost.data.title,
+                content: blogPost.data.content
+            })
         }
     }, [blogPost.data?.id]);
 
-    return <form onSubmit={handleEdit} className="blogEditContent">
-        <Input value={blogTitle} onChange={e => setBlogTitle(e.target.value)} type="text" name="title" label="Blog Title:" />
-        <small>Title should be at least 10 characters long. Current length: {blogTitle.length}</small>
+    return <form onSubmit={handleSubmit(onEdit)} className="blogEditContent">
+        <Input type="text" label="Blog Title:" error={errors.title?.message?.toString()}
+               {...register("title", {
+                   required: "Please enter Blog's title",
+                   minLength: {
+                       value: 10,
+                       message: "Min title length is 10",
+                   },
+               })} />
 
         <br/>
-        <TextArea value={blogContent} onChange={e => setBlogContent(e.target.value)}
-                  cols={100} rows={30} name="content" label="Blog Content:" />
-        <small>Content should be at least 500 characters long. Current length: {blogContent.length}</small>
+
+        <TextArea cols={100} rows={30} label="Blog Content:" error={errors.content?.message?.toString()}
+                  {...register("content", {
+                      required: "Please enter Blog's content",
+                      minLength: {
+                          value: 500,
+                          message: "Min title length is 500",
+                      },
+                  })}/>
 
         <div>
-            <button className="actionButton" type="submit">{!!blogPostId ? "Edit" : "Add"} Post</button>
-            {updateMutation.isError && <div className="errorContainer">{updateMutation.error.message}</div>}
-            {createMutation.isError && <div className="errorContainer">{createMutation.error.message}</div>}
+            { isSubmitting && <div>{!!blogPostId ? "Editing" : "Adding"} Post</div> }
+            {!isSubmitting && <button className="actionButton" type="submit">{!!blogPostId ? "Edit" : "Add"} Post</button> }
+            {updateMutation.isError && <Error error={updateMutation.error.message}/>}
+            {createMutation.isError && <Error error={createMutation.error.message} />}
         </div>
     </form>
 }
