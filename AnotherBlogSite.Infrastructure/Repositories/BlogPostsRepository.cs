@@ -31,7 +31,7 @@ internal sealed class BlogPostsRepository: IBlogPostsRepository
             .Include(x => x.Comments)
                 .ThenInclude(x => x.Author)
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == blogPostId);
+            .SingleOrDefaultAsync(x => x.Id == blogPostId);
 
         if (blogPost is null)
             return Result<DomainBlogPost>.CreateFailure("Blog Post not found!", ErrorType.NotFound);
@@ -61,7 +61,7 @@ internal sealed class BlogPostsRepository: IBlogPostsRepository
         var originalBlogPost = await _context.BlogPosts
             .Include(x => x.Author)
             .Include(x => x.Comments)
-            .FirstOrDefaultAsync(x => x.Id == updatedBlogPost.Id);
+            .SingleOrDefaultAsync(x => x.Id == updatedBlogPost.Id);
 
         if (originalBlogPost is null)
             return Result<DomainBlogPost>.CreateFailure("Blog Post not found!", ErrorType.NotFound);
