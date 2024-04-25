@@ -9,7 +9,6 @@ import BlogsPage from "./pages/BlogsPage.tsx";
 import BlogDetailsPage from "./pages/BlogDetailsPage.tsx";
 import AuthContextProvider from "./components/AuthContext.tsx";
 import BlogEditPage from "./pages/BlogEditPage.tsx";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const router = createBrowserRouter([
     {
@@ -57,7 +56,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <QueryClientProvider client={queryClient}>
             <AuthContextProvider>
                 <RouterProvider router={router} />
-                <ReactQueryDevtools initialIsOpen={true} />
             </AuthContextProvider>
         </QueryClientProvider>
     </React.StrictMode>,

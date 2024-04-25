@@ -1,6 +1,5 @@
 ﻿import axios from "axios";
 import {useContext, useEffect} from "react";
-// import useRefreshToken from "./useRefreshToken";
 import {IAuthContext, AuthContext} from "../components/AuthContext.tsx";
 import {useNavigate} from "react-router";
 import {IValidationProblemDetails} from "../models/IProblemDetails.ts";
@@ -46,7 +45,6 @@ const httpClient = axios.create({
 });
 
 const useAxiosRequestProvider = (): IRequestProvider => {
-    // const refresh = useRefreshToken();
     const { accessToken, updateAccessToken } = useContext(AuthContext) as IAuthContext;
     const navigate = useNavigate();
 
@@ -70,10 +68,6 @@ const useAxiosRequestProvider = (): IRequestProvider => {
                     updateAccessToken(null);
                     prevRequest.sent = true;
                     navigate("/signIn");
-
-                    // const newAccessToken = await refresh();
-                    // prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-                    // return httpClient(prevRequest);
                 }
 
                 return Promise.reject(error);
@@ -84,7 +78,7 @@ const useAxiosRequestProvider = (): IRequestProvider => {
             httpClient.interceptors.request.eject(requestIntercept);
             httpClient.interceptors.response.eject(responseIntercept);
         }
-    }, [accessToken/*, refresh */])
+    }, [accessToken])
 
     return new AxiosRequestProvider(httpClient);
 }
