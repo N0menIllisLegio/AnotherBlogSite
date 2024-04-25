@@ -1,13 +1,14 @@
 ﻿import IComment from "../models/IComment.ts"
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {UpdateComment} from "../services/CommentsService.ts";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import Guid from "../models/Guid.ts";
 import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/CommentListComponent.css";
 import {useCommentsService} from "../hooks/useDependencyInjection.ts";
 import RequestError from "../models/RequestError.ts";
 import IBlogPost from "../models/IBlogPost.ts";
+import {AuthContext, IAuthContext} from "./AuthContext.tsx";
 
 export default function CommentListComponent(props: { comment: IComment }) {
     const { comment } = props;
@@ -15,6 +16,7 @@ export default function CommentListComponent(props: { comment: IComment }) {
     const [isEditing, setIsEditing] = useState(false);
     const [editingCommentContent, setEditingCommentContent] = useState(comment.content);
     const commentsService = useCommentsService();
+    const { accessToken } = useContext(AuthContext) as IAuthContext;
 
     const deleteCommentMutation = useMutation<void, RequestError, Guid>({ mutationFn: commentsService.deleteComment,
         onSuccess: () => {
@@ -71,10 +73,10 @@ export default function CommentListComponent(props: { comment: IComment }) {
             )
         }
 
-        { !isEditing && <button style={{ marginRight: "8px" }}
+        { accessToken && !isEditing && <button style={{ marginRight: "8px" }}
             className="actionButton" onClick={() => setIsEditing(true)}>Edit</button> }
         { isEditing && updateCommentMutation.isError && <div className="errorContainer">{ updateCommentMutation.error.message }</div> }
-        { !isEditing && <button
+        {  accessToken && !isEditing && <button
             className="actionButton deleteButton" onClick={() => deleteCommentMutation.mutate(comment.id)}>Delete</button> }
         { !isEditing && deleteCommentMutation.isError && <div className="errorContainer">{ deleteCommentMutation.error.message }</div> }
     </div>

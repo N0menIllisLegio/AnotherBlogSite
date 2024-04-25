@@ -4,11 +4,14 @@ import "../assets/BlogsPage.css";
 import QueryKey from "../utils/QueryKeys.ts";
 import {useNavigate} from "react-router";
 import {useBlogPostsService} from "../hooks/useDependencyInjection.ts";
+import {useContext} from "react";
+import {AuthContext, IAuthContext} from "../components/AuthContext.tsx";
 
 export default function BlogsPage() {
     const navigate = useNavigate();
     const blogPostsService = useBlogPostsService();
     const blogPosts = useQuery({ queryKey: [QueryKey.BlogPosts], queryFn: blogPostsService.getBlogPosts });
+    const { accessToken } = useContext(AuthContext) as IAuthContext;
 
     if (blogPosts.isPending) return <div>Loading...</div>
     if (blogPosts.isError) return <div className="errorContainer">Error: {blogPosts.error.message}</div>
@@ -16,6 +19,6 @@ export default function BlogsPage() {
     return <div className="blogsPages">
         { blogPosts.isSuccess && blogPosts.data?.length == 0 && <div>No Blog posts</div> }
         { blogPosts.data?.sort((blogPost1, blogPost2) => blogPost2.createdDate.getTime() - blogPost1.createdDate.getTime()).map(blogPost => <BlogPostListComponent key={blogPost.id} blogPost={blogPost} />) }
-        <button className="addBlogPostButton actionButton" onClick={() => navigate("new")}>Write a Post</button>
+        { accessToken && <button className="addBlogPostButton actionButton" onClick={() => navigate("new")}>Write a Post</button> }
     </div>
 }

@@ -2,7 +2,7 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {CreateComment} from "../services/CommentsService.ts";
 import CommentListComponent from "../components/CommentListComponent.tsx";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import IBlogPost from "../models/IBlogPost.ts";
 import Guid from "../models/Guid.ts";
 import IComment from "../models/IComment.ts";
@@ -10,6 +10,7 @@ import QueryKey from "../utils/QueryKeys.ts";
 import "../assets/BlogDetailsPage.css";
 import {useBlogPostsService, useCommentsService} from "../hooks/useDependencyInjection.ts";
 import RequestError from "../models/RequestError.ts";
+import {AuthContext, IAuthContext} from "../components/AuthContext.tsx";
 
 export default function BlogDetailsPage() {
     const { blogPostId } = useParams();
@@ -17,6 +18,7 @@ export default function BlogDetailsPage() {
     const navigate = useNavigate();
     const blogPostsService = useBlogPostsService();
     const commentsService = useCommentsService();
+    const { accessToken } = useContext(AuthContext) as IAuthContext;
 
     const blogPost = useQuery({
         queryKey: [QueryKey.BlogPosts, blogPostId],
@@ -64,32 +66,36 @@ export default function BlogDetailsPage() {
 
         <p>{blogPost.data?.content}</p>
 
-        <div className="infoSection">
-            <div>
-                <button className="actionButton editButton" onClick={() => navigate("edit")}>Edit Blog Post</button>
-                <button className="actionButton deleteButton" onClick={() => deleteBlogMutation.mutate(blogPostId!)}>Delete
-                    Blog
-                </button>
+        { accessToken &&
+            <div className="infoSection">
+                <div>
+                    <button className="actionButton editButton" onClick={() => navigate("edit")}>Edit Blog Post</button>
+                    <button className="actionButton deleteButton" onClick={() => deleteBlogMutation.mutate(blogPostId!)}>Delete
+                        Blog
+                    </button>
+                </div>
             </div>
-        </div>
+        }
 
         <div>
-            <form style={{marginTop: "2rem", marginBottom: "2rem"}} onSubmit={(e) => {
-                e.preventDefault();
+            { accessToken &&
+                <form style={{ marginTop: "2rem", marginBottom: "2rem" }} onSubmit={(e) => {
+                    e.preventDefault();
 
-                createCommentMutation.mutate({
-                    blogPostId: blogPost.data.id,
-                    content: newCommentContent
-                });
-            }}>
-                <textarea placeholder="Write your comment..." rows={8} value={newCommentContent}
-                          onChange={(e) => setNewCommentContent(e.target.value)}/>
-                <br/>
-                <button type="submit" className="actionButton">Send
-                </button>
-                {createCommentMutation.isError && <div className="errorContainer">Failed to create
-                    comment: {createCommentMutation.error.message}</div>}
-            </form>
+                    createCommentMutation.mutate({
+                        blogPostId: blogPost.data.id,
+                        content: newCommentContent
+                    });
+                }}>
+                    <textarea placeholder="Write your comment..." rows={8} value={newCommentContent}
+                              onChange={(e) => setNewCommentContent(e.target.value)}/>
+                    <br/>
+                    <button type="submit" className="actionButton">Send
+                    </button>
+                    {createCommentMutation.isError && <div className="errorContainer">Failed to create
+                        comment: {createCommentMutation.error.message}</div>}
+                </form>
+            }
 
             {comments?.length == 0 && <div style={{marginTop: "1rem"}}><i>No comments...</i></div>}
 
