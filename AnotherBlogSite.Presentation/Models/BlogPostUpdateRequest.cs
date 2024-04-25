@@ -6,11 +6,12 @@ public sealed class BlogPostUpdateRequest
 {
     [Required]
     public Guid BlogPostId { get; set; }
-    
+
     [Required]
     [MinLength(10)]
+    [MaxLength(255)]
     public string Title { get; set; }
-    
+
     [Required]
     [MinLength(500)]
     public string Content { get; set; }

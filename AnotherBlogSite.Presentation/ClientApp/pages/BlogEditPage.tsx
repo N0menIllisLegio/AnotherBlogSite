@@ -82,6 +82,10 @@ export default function BlogEditPage() {
                        value: 10,
                        message: "Min title length is 10",
                    },
+                   maxLength: {
+                       value: 255,
+                       message: "Max title length is 255",
+                   },
                })} />
 
         <br/>
