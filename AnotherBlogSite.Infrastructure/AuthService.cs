@@ -18,10 +18,10 @@ namespace AnotherBlogSite.Infrastructure;
 internal sealed class AuthService: IAuthService
 {
     private const string InvalidEmailOrPasswordError = "Invalid email or password!";
-    
+
     private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new();
     private readonly UserMapper _mapper = new();
-    
+
     private readonly UserManager<InfrastructureUser> _userManager;
     private readonly JwtOptions _jwtOptions;
 
@@ -42,7 +42,8 @@ internal sealed class AuthService: IAuthService
         if (result.Succeeded)
             return EmptyResult.CreateSuccess();
 
-        return EmptyResult.CreateFailure(result.Errors.First().Description);
+        return EmptyResult.CreateFailure(
+            string.Join(Environment.NewLine, result.Errors.Select(x => x.Description)));
     }
 
     public async Task<Result<SignInModel>> SignInAsync(string email, string password)
@@ -61,7 +62,7 @@ internal sealed class AuthService: IAuthService
 
         return Result<SignInModel>.CreateSuccess(new() { AccessToken = token });
     }
-    
+
     private string GenerateToken(InfrastructureUser user)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
