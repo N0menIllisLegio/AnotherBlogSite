@@ -76,18 +76,22 @@ export default function BlogDetailsPage() {
         </div>
 
         <div>
-            <div style={{marginTop: "2rem", marginBottom: "2rem"}}>
+            <form style={{marginTop: "2rem", marginBottom: "2rem"}} onSubmit={(e) => {
+                e.preventDefault();
+
+                createCommentMutation.mutate({
+                    blogPostId: blogPost.data.id,
+                    content: newCommentContent
+                });
+            }}>
                 <textarea placeholder="Write your comment..." rows={8} value={newCommentContent}
                           onChange={(e) => setNewCommentContent(e.target.value)}/>
                 <br/>
-                <button className="actionButton" onClick={() => createCommentMutation.mutate({
-                    blogPostId: blogPost.data.id,
-                    content: newCommentContent
-                })}>Send
+                <button type="submit" className="actionButton">Send
                 </button>
                 {createCommentMutation.isError && <div className="errorContainer">Failed to create
                     comment: {createCommentMutation.error.message}</div>}
-            </div>
+            </form>
 
             {comments.isPending && <div>Comments are loading...</div>}
             {comments.isError &&

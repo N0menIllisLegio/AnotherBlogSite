@@ -38,17 +38,21 @@ export default function CommentListComponent(props: { comment: IComment }) {
         { !isEditing && <p className="comment">{comment.content}</p> }
         {
             isEditing && (
-                <div>
-                <textarea name="Text1" cols={100} rows={8} value={editingCommentContent}
-                          onChange={(e) => setEditingCommentContent(e.target.value)} />
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+
+                    updateCommentMutation.mutate({
+                        commentId: comment.id,
+                        content: editingCommentContent,
+                    });
+                }}>
+                    <textarea name="Text1" cols={100} rows={8} value={editingCommentContent}
+                              onChange={(e) => setEditingCommentContent(e.target.value)} />
                     <br/>
                     <button
+                        type="submit"
                         style={{ marginRight: "8px" }}
-                        className="actionButton"
-                        onClick={() => updateCommentMutation.mutate({
-                            commentId: comment.id,
-                            content: editingCommentContent,
-                        })}>Edit
+                        className="actionButton">Submit
                     </button>
 
                     <button
@@ -58,7 +62,7 @@ export default function CommentListComponent(props: { comment: IComment }) {
                             setEditingCommentContent(comment.content);
                         }}>Cancel
                     </button>
-                </div>
+                </form>
             )
         }
 

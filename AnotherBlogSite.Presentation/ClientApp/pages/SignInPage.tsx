@@ -1,4 +1,4 @@
-﻿import {useState} from "react";
+﻿import {FormEvent, useState} from "react";
 import {useNavigate} from "react-router";
 import "../assets/SignIn.css"
 import useSignIn from "../hooks/useSignIn.ts";
@@ -11,7 +11,9 @@ export default function SignInPage() {
     const navigate = useNavigate();
     const signIn = useSignIn();
 
-    const onClickSignIn = async () => {
+    const onClickSignIn = async (e: FormEvent) => {
+        e.preventDefault();
+
         setError(null);
         setSignInExecuting(true);
 
@@ -29,7 +31,7 @@ export default function SignInPage() {
         }
     }
 
-    return <div className="signInContent">
+    return <form className="signInContent" onSubmit={onClickSignIn}>
         <div>
             <label htmlFor="email">Email:</label>
             <input type="email" name="email" value={email} onChange={e => setEmail(e.target.value)} />
@@ -38,9 +40,9 @@ export default function SignInPage() {
         </div>
 
         <div className="signInBelowInputs">
-            { !signInExecuting && <button onClick={onClickSignIn} className="actionButton">Sign In</button> }
+            { !signInExecuting && <button type="submit" className="actionButton">Sign In</button> }
             { signInExecuting && <div>Signing in...</div> }
             { error && <div className="errorContainer">{error}</div> }
         </div>
-    </div>
+    </form>
 }

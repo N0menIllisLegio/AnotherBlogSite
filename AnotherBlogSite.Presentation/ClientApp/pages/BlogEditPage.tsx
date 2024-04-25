@@ -1,5 +1,5 @@
 ﻿import {useNavigate, useParams} from "react-router";
-import {useEffect, useState} from "react";
+import {FormEvent, useEffect, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {CreateBlogPost, UpdateBlogPost} from "../services/BlogPostsService.ts";
 import IBlogPost from "../models/IBlogPost.ts";
@@ -38,7 +38,9 @@ export default function BlogEditPage() {
         }
     });
 
-    const handleEdit = () => {
+    const handleEdit = (e: FormEvent) => {
+        e.preventDefault();
+
         if (!!blogPostId) {
             updateMutation.mutate({ blogPostId, title: blogTitle, content: blogContent });
         } else {
@@ -53,7 +55,7 @@ export default function BlogEditPage() {
         }
     }, [blogPost.data?.id]);
 
-    return <div className="blogEditContent">
+    return <form onSubmit={handleEdit} className="blogEditContent">
         <label htmlFor="title">Blog Title:</label>
         <input name="title" type="text" value={blogTitle} onChange={(e) => setBlogTitle(e.target.value)}/>
         <small>Title should be at least 10 characters long. Current length: {blogTitle.length}</small>
@@ -64,9 +66,9 @@ export default function BlogEditPage() {
         <small>Content should be at least 500 characters long. Current length: {blogContent.length}</small>
 
         <div>
-            <button className="actionButton" onClick={handleEdit}>{!!blogPostId ? "Edit" : "Add"} Post</button>
+            <button className="actionButton" type="submit">{!!blogPostId ? "Edit" : "Add"} Post</button>
             {updateMutation.isError && <div className="errorContainer">{updateMutation.error.message}</div>}
             {createMutation.isError && <div className="errorContainer">{createMutation.error.message}</div>}
         </div>
-    </div>
+    </form>
 }
