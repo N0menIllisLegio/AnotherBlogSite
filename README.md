@@ -8,60 +8,62 @@
 1. Clone repository
 2. Open cloned repository root directory from terminal
 3. Execute command:
-```shell
-dotnet run --project .\AnotherBlogSite.Presentation\AnotherBlogSite.Presentation.csproj --launch-profile 'AnotherBlogSite'
-```
+    ```shell
+    dotnet run --project .\AnotherBlogSite.Presentation\AnotherBlogSite.Presentation.csproj --launch-profile 'AnotherBlogSite'
+    ```
+4. To create a user use SignUp endpoint from swagger.
+
 
 ## Configuration
 Need to update CORS policy for production.
 
 ### Server
 - Database connection string configuration in the `appsettings` of corresponding environment:
-```json
-"ConnectionStrings": {
-  "BlogSiteContext": ""
-}
-```
-- JWT's parameters Audience, Issuer, Key - section `Jwt` in `appsettings` of corresponding environment:
-```json
-"Jwt": {
-  "Audience": "",
-  "Issuer": "",
-  "Key": ""
-}
-```
-- .NET launches client's development server on the url provided in `AnotherBlogSite.Presentation.csproj` file:
-```xml
-<SpaProxyServerUrl>https://localhost:44435</SpaProxyServerUrl>
-```
-- To change server's url for AnotherBlogSite launch profile, update `.\AnotherBlogSite.Presentation\Properties\launchSettings.json` file:
-```json
-"AnotherBlogSite": {
-    ...
-    "applicationUrl": "https://localhost:7281;http://localhost:5125",
-    ...
+    ```json
+    "ConnectionStrings": {
+      "BlogSiteContext": ""
     }
-},
-```
+    ```
+- JWT's parameters Audience, Issuer, Key - section `Jwt` in `appsettings` of corresponding environment:
+    ```json
+    "Jwt": {
+      "Audience": "",
+      "Issuer": "",
+      "Key": ""
+    }
+    ```
+- .NET launches client's development server on the url provided in `AnotherBlogSite.Presentation.csproj` file:
+    ```xml
+    <SpaProxyServerUrl>https://localhost:44435</SpaProxyServerUrl>
+    ```
+- To change server's url for AnotherBlogSite launch profile, update `.\AnotherBlogSite.Presentation\Properties\launchSettings.json` file:
+    ```json
+    "AnotherBlogSite": {
+        ...
+        "applicationUrl": "https://localhost:7281;http://localhost:5125",
+        ...
+        }
+    },
+    ```
 
 
 ### Client
 Client application placed in the `.\AnotherBlogSite.Presentation\ClientApp`
 - To set server's address set variable `VITE_SERVER_URL` in `.env` of corresponding environment
 
-```
-VITE_SERVER_URL=https://localhost:7281
-```
+    ```
+    VITE_SERVER_URL=https://localhost:7281
+    ```
 
 - To set dev server's port change `server.port` in the `vite.config.ts`:
-```ts
-export default defineConfig({
-    plugins: [react(), basicSsl()],
-    server: {
-        port: 44435,
-    },
-})
-```
+    ```ts
+    export default defineConfig({
+        plugins: [react(), basicSsl()],
+        server: {
+            port: 44435,
+        },
+    })
+    ```
 
 ## Tests
 To run tests execute following command in solution root:
