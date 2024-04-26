@@ -1,6 +1,6 @@
-﻿using AnotherBlogSite.Common;
+﻿using AnotherBlogSite.Application.Common;
 using Microsoft.AspNetCore.Mvc;
-using EmptyResult = AnotherBlogSite.Common.EmptyResult;
+using EmptyResult = AnotherBlogSite.Application.Common.EmptyResult;
 
 namespace AnotherBlogSite.Presentation.Controllers;
 
@@ -26,7 +26,7 @@ public class BaseController: ControllerBase
 
         return BadRequest(badRequestErrors);
     }
-    
+
     protected IActionResult OperationResult(EmptyResult result)
     {
         if (result.Succeeded)

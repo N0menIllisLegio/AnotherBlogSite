@@ -1,5 +1,5 @@
-﻿using AnotherBlogSite.Application.Entities;
-using AnotherBlogSite.Common;
+﻿using AnotherBlogSite.Application.Common;
+using AnotherBlogSite.Application.Entities;
 using AnotherBlogSite.Data;
 using AnotherBlogSite.Data.Entities;
 using Microsoft.EntityFrameworkCore;

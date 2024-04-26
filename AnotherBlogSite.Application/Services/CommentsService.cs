@@ -1,6 +1,6 @@
-﻿using AnotherBlogSite.Application.Entities;
+﻿using AnotherBlogSite.Application.Common;
+using AnotherBlogSite.Application.Entities;
 using AnotherBlogSite.Application.Mapper;
-using AnotherBlogSite.Common;
 using AnotherBlogSite.Data;
 using AnotherBlogSite.Data.Entities;
 using Microsoft.EntityFrameworkCore;

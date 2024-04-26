@@ -1,9 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AnotherBlogSite.Application.Common;
 using AnotherBlogSite.Application.Entities;
 using AnotherBlogSite.Application.Options;
-using AnotherBlogSite.Common;
 using AnotherBlogSite.Data.Entities;
 using AnotherBlogSite.Presentation.Models;
 using Microsoft.AspNetCore.Identity;

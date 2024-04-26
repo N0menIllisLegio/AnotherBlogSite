@@ -1,4 +1,4 @@
-﻿namespace AnotherBlogSite.Common;
+﻿namespace AnotherBlogSite.Application.Common;
 
 public sealed class Result<TModel>: EmptyResult
 {
@@ -11,7 +11,7 @@ public sealed class Result<TModel>: EmptyResult
         };
     }
 
-    public static Result<TModel> CreateFailure(string error, ErrorType errorType = Common.ErrorType.General)
+    public static Result<TModel> CreateFailure(string error, ErrorType errorType = Application.Common.ErrorType.General)
     {
         return new Result<TModel>
         {

@@ -1,4 +1,4 @@
-﻿namespace AnotherBlogSite.Common;
+﻿namespace AnotherBlogSite.Application.Common;
 
 public class EmptyResult
 {
@@ -10,7 +10,7 @@ public class EmptyResult
         };
     }
 
-    public static EmptyResult CreateFailure(string error, ErrorType errorType = Common.ErrorType.General)
+    public static EmptyResult CreateFailure(string error, ErrorType errorType = Application.Common.ErrorType.General)
     {
         return new EmptyResult
         {
