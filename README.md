@@ -63,6 +63,12 @@ export default defineConfig({
 })
 ```
 
+## Tests
+To run tests execute following command in solution root:
+```bash
+dotnet test
+```
+
 # Amortization Schedule procedure
 In the root of the repository there is a file named `AmortizationScheduleProcedure.sql` it drops if exist and creates function `GenerateAmortizationSchedule` and procedure `GenerateReportForTestExercise` than executes procedure.
 The procedure is used to generate schedule for a loan of 36000 and interest of 8% for 36 monthly payments and then recycles after the 12th payment on the remaining amount with a fixed interest of 4.5% for an additional 48 payments.
