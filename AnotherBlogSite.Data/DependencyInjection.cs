@@ -1,7 +1,4 @@
-﻿using AnotherBlogSite.Application.Repositories;
-using AnotherBlogSite.Application.Services;
-using AnotherBlogSite.Data.Entities;
-using AnotherBlogSite.Data.Repositories;
+﻿using AnotherBlogSite.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +7,7 @@ namespace AnotherBlogSite.Data;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddData(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<BlogSiteContext>(
             options => options.UseSqlServer(configuration.GetConnectionString("BlogSiteContext")));
@@ -24,10 +21,6 @@ public static class DependencyInjection
                 opt.Password.RequireUppercase = true;
             })
             .AddEntityFrameworkStores<BlogSiteContext>();
-
-        services.AddScoped<IBlogPostsRepository, BlogPostsRepository>();
-        services.AddScoped<ICommentsRepository, CommentsRepository>();
-        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

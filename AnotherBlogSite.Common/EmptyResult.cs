@@ -1,6 +1,4 @@
-﻿using AnotherBlogSite.Application.Common;
-
-namespace AnotherBlogSite.Application.Models;
+﻿namespace AnotherBlogSite.Common;
 
 public class EmptyResult
 {
@@ -21,7 +19,7 @@ public class EmptyResult
             Error = error,
         };
     }
-    
+
     public bool Succeeded { get; set; }
     public string? Error { get; set; }
     public ErrorType? ErrorType { get; set; }

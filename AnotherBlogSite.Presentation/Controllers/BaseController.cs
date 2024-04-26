@@ -1,7 +1,6 @@
-﻿using AnotherBlogSite.Application.Common;
-using AnotherBlogSite.Application.Models;
+﻿using AnotherBlogSite.Common;
 using Microsoft.AspNetCore.Mvc;
-using EmptyResult = AnotherBlogSite.Application.Models.EmptyResult;
+using EmptyResult = AnotherBlogSite.Common.EmptyResult;
 
 namespace AnotherBlogSite.Presentation.Controllers;
 

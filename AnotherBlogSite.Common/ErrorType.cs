@@ -1,4 +1,4 @@
-﻿namespace AnotherBlogSite.Application.Common;
+﻿namespace AnotherBlogSite.Common;
 
 public enum ErrorType
 {

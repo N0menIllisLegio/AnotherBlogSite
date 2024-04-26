@@ -1,6 +1,4 @@
-﻿using AnotherBlogSite.Application.Common;
-
-namespace AnotherBlogSite.Application.Models;
+﻿namespace AnotherBlogSite.Common;
 
 public sealed class Result<TModel>: EmptyResult
 {
@@ -22,6 +20,6 @@ public sealed class Result<TModel>: EmptyResult
             Error = error,
         };
     }
-    
+
     public TModel? Value { get; set; }
 }

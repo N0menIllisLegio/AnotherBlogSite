@@ -33,11 +33,12 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
-        
+
         services.AddScoped<IBlogPostService, BlogPostsService>();
         services.AddScoped<ICommentService, CommentsService>();
-        
+
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Jwt));
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

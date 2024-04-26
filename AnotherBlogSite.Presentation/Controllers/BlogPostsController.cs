@@ -22,7 +22,7 @@ public sealed class BlogPostsController: BaseController
 
     [HttpPost]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType<BlogPost>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<BlogPostModel>((int)HttpStatusCode.OK)]
     [ProducesResponseType((int) HttpStatusCode.Forbidden)]
     [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Create([FromBody] BlogPostCreateRequest request)
@@ -39,7 +39,7 @@ public sealed class BlogPostsController: BaseController
 
     [HttpPut]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType<BlogPost>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<BlogPostModel>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Update([FromBody] BlogPostUpdateRequest request)
     {
@@ -61,7 +61,7 @@ public sealed class BlogPostsController: BaseController
     [AllowAnonymous]
     [HttpGet("{blogPostId}")]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType<BlogPost>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<BlogPostModel>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Get([FromRoute] Guid blogPostId)
     {
@@ -73,7 +73,7 @@ public sealed class BlogPostsController: BaseController
     [AllowAnonymous]
     [HttpGet]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType<List<BlogPost>>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<List<BlogPostModel>>((int)HttpStatusCode.OK)]
     public async Task<IActionResult> Get()
     {
         var result = await _blogPostsService.GetAllAsync();

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnotherBlogSite.Data;
 
-internal sealed class BlogSiteContext: IdentityUserContext<User, Guid>
+public sealed class BlogSiteContext: IdentityUserContext<User, Guid>
 {
     public BlogSiteContext(DbContextOptions<BlogSiteContext> options)
         : base(options)

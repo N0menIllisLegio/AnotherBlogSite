@@ -7,5 +7,5 @@ namespace AnotherBlogSite.Presentation.Mapper;
 [Mapper]
 internal sealed partial class UserMapper
 {
-    public partial User MapToUser(SignUpRequest request);
+    public partial UserModel MapToUser(SignUpRequest request);
 }

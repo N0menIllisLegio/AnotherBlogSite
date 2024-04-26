@@ -1,20 +1,17 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AnotherBlogSite.Application.Models;
+using AnotherBlogSite.Application.Entities;
 using AnotherBlogSite.Application.Options;
-using AnotherBlogSite.Application.Services;
+using AnotherBlogSite.Common;
 using AnotherBlogSite.Data.Entities;
-using AnotherBlogSite.Data.Mapper;
 using AnotherBlogSite.Presentation.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using UserMapper = AnotherBlogSite.Application.Mapper.UserMapper;
 
-using InfrastructureUser = AnotherBlogSite.Data.Entities.User;
-using DomainUser = AnotherBlogSite.Application.Entities.User;
-
-namespace AnotherBlogSite.Data;
+namespace AnotherBlogSite.Application.Services;
 
 internal sealed class AuthService: IAuthService
 {
@@ -32,9 +29,9 @@ internal sealed class AuthService: IAuthService
         _jwtOptions = options.Value;
     }
 
-    public async Task<EmptyResult> SignUpAsync(DomainUser newUser, string password)
+    public async Task<EmptyResult> SignUpAsync(UserModel newUserModel, string password)
     {
-        var user = _mapper.MapToInfrastructure(newUser);
+        var user = _mapper.Map(newUserModel);
 
         user.UserName = user.Email;
 

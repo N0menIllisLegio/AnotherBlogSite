@@ -23,7 +23,7 @@ public sealed class CommentsController: BaseController
 
     [HttpPost]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType<Comment>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<CommentModel>((int)HttpStatusCode.OK)]
     [ProducesResponseType((int) HttpStatusCode.Forbidden)]
     [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Create([FromBody] CommentCreateRequest request)
@@ -40,7 +40,7 @@ public sealed class CommentsController: BaseController
 
     [HttpPut]
     [ProducesResponseType((int) HttpStatusCode.Unauthorized)]
-    [ProducesResponseType<Comment>((int)HttpStatusCode.OK)]
+    [ProducesResponseType<CommentModel>((int)HttpStatusCode.OK)]
     [ProducesResponseType<ValidationProblemDetails>((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Update([FromBody] CommentUpdateRequest request)
     {

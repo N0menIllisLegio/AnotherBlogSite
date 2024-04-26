@@ -1,11 +1,11 @@
 ﻿using AnotherBlogSite.Application.Entities;
-using AnotherBlogSite.Application.Models;
+using AnotherBlogSite.Common;
 
 namespace AnotherBlogSite.Application.Services;
 
 public interface ICommentService
 {
-    Task<Result<Comment>> CreateAsync(Guid authorId, Guid blogPostId, string content);
-    Task<Result<Comment>> UpdateAsync(Guid commentId, string newContent);
+    Task<Result<CommentModel>> CreateAsync(Guid authorId, Guid blogPostId, string content);
+    Task<Result<CommentModel>> UpdateAsync(Guid commentId, string newContent);
     Task DeleteAsync(Guid commentId);
 }
