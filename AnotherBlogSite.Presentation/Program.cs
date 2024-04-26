@@ -32,8 +32,9 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddTransient<RequestsLoggingMiddleware>();
 builder.Services.AddControllers();
 
+// TODO: Configure CORS
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(
-    x => x.WithOrigins("https://localhost:44435").AllowAnyMethod().AllowAnyHeader()));
+    x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
 var app = builder.Build();
 
