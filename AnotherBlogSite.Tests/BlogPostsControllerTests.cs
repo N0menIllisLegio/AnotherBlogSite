@@ -9,7 +9,7 @@ using Xunit;
 
 namespace AnotherBlogSite.Tests;
 
-public sealed class BlogPostsControllerTests
+public class BlogPostsControllerTests
 {
     [Fact]
     public async Task GetExistingBlogPost()
