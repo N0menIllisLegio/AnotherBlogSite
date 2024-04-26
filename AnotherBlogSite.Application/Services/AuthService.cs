@@ -76,8 +76,8 @@ internal sealed class AuthService: IAuthService
             _jwtOptions.Audience,
             new ClaimsIdentity(claims),
             notBefore: null,
-            expires: DateTime.Now.AddHours(2),
-            issuedAt: DateTime.Now,
+            expires: DateTime.UtcNow.AddHours(2),
+            issuedAt: DateTime.UtcNow,
             credentials);
     }
 }

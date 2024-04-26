@@ -8,7 +8,7 @@ namespace AnotherBlogSite.Presentation.Middlewares;
 internal sealed class RequestsLoggingMiddleware: IMiddleware
 {
     private const string LogDateFormat = "dd/MM/yy HH:mm:ss:fff";
-    
+
     private readonly ILogger<RequestsLoggingMiddleware> _logger;
 
     public RequestsLoggingMiddleware(ILogger<RequestsLoggingMiddleware> logger)
@@ -19,14 +19,14 @@ internal sealed class RequestsLoggingMiddleware: IMiddleware
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         string bodyContent = await ReadRequestBodyAsync(context.TraceIdentifier, context.Request);
-        
+
         _logger.LogInformation(
-            "[{Time}] [{TraceIdentifier}] {Method} {Url} {bodyContent}", DateTime.Now.ToString(LogDateFormat),
+            "[{Time}] [{TraceIdentifier}] {Method} {Url} {bodyContent}", DateTime.UtcNow.ToString(LogDateFormat),
             context.TraceIdentifier, context.Request.Method, context.Request.GetDisplayUrl(), bodyContent);
 
         await next(context);
 
-        _logger.LogInformation("[{Time}] [{TraceIdentifier}] {StatusCode}", DateTime.Now.ToString(LogDateFormat),
+        _logger.LogInformation("[{Time}] [{TraceIdentifier}] {StatusCode}", DateTime.UtcNow.ToString(LogDateFormat),
             context.TraceIdentifier, context.Response.StatusCode);
     }
 
@@ -34,7 +34,7 @@ internal sealed class RequestsLoggingMiddleware: IMiddleware
     {
         if (request.ContentLength is null or 0)
             return "[NO BODY]";
-        
+
         string body = Environment.NewLine;
 
         try
